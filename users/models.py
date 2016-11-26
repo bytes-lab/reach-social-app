@@ -28,8 +28,12 @@ class UserProfile(models.Model):
     latitude = models.FloatField(default=-90)
     longitude = models.FloatField(default=-90)
     qbchat_id = models.IntegerField(default=0)
-    location = models.PointField(srid=4326, dim=3)
+    location = models.PointField(srid=4326, dim=3, blank=True, null=True)
     objects = models.GeoManager()
+
+    def save(self, **kwargs):
+        point = "POINT(0 0)"
+        self.location = fromstr(point)
 
 
 class UserNotification(models.Model):

@@ -38,106 +38,121 @@ braintree.Configuration.configure(braintree.Environment.Sandbox,
 @api_view(["POST"])
 def registration(request):
     """
-User registration method.
+    User registration method.
 
-    Example json:
-    {
-        "username":"antonboksha",
-        "email":"antonboksha@gmail.com",
-        "password":"qwerty",
-        "device_token": "devicetokengoeshere",
-        "device_unique_id": "devicegoeshere"
-    }
-
-    Code statuses can be found here: /api/v1/docs/status-code/
-
-    Success json:
-    {
-        "success": 1,
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
-        "user": {
-            "id": 3,
-            "username": "antonboksha",
-            "first_name": "Anton",
-            "last_name": "Boksha",
-            "email": "antonboksha@gmail.com",
-            "info": {
-                    "full_name": "Anton Boksha",
-                    "biography": "My short biography here!",
-                    "like_count": 13,
-                    "comment_count": 27,
-                    "rate": 3,
-                    "avatar": "/media/default_images/default.png",
-                    "is_facebook": false,
-                    "is_twitter": false,
-                    "is_instagram": false
-            },
-            "count_downvoted": 1,
-            "count_upvoted": 1,
-            "count_likes": 1,
-            "count_comments": 1,
-            "complete_likes": 50
+        Example json:
+        {
+            "username":"antonboksha",
+            "email":"antonboksha@gmail.com",
+            "password":"qwerty",
+            "device_token": "devicetokengoeshere",
+            "device_unique_id": "devicegoeshere"
         }
-    }
 
-    Fail json:
-    {
-        "error": <status_code>
-    }
+        Code statuses can be found here: /api/v1/docs/status-code/
+
+        Success json:
+        {
+            "success": 1,
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
+            "user": {
+                "id": 3,
+                "username": "antonboksha",
+                "first_name": "Anton",
+                "last_name": "Boksha",
+                "email": "antonboksha@gmail.com",
+                "info": {
+                        "full_name": "Anton Boksha",
+                        "biography": "My short biography here!",
+                        "like_count": 13,
+                        "comment_count": 27,
+                        "rate": 3,
+                        "avatar": "/media/default_images/default.png",
+                        "is_facebook": false,
+                        "is_twitter": false,
+                        "is_instagram": false
+                },
+                "count_downvoted": 1,
+                "count_upvoted": 1,
+                "count_likes": 1,
+                "count_comments": 1,
+                "complete_likes": 50
+            }
+        }
+
+        Fail json:
+        {
+            "error": <status_code>
+        }
     """
-    if request.method == "POST":
-        if "username" in request.data and request.data["username"] != "" and request.data["username"] is not None:
-            if User.objects.filter(username=request.data["username"]).exists():
-                return Response({"error": 2})
-            else:
-                if len(request.data["username"]) < 4:
-                    return Response({"error": 3})
-                elif len(request.data["username"]) > 20:
-                    return Response({"error": 4})
-                elif " " in request.data["username"]:
-                    return Response({"error": 5})
-                elif re.match("^[a-zA-Z0-9_]\w{3,19}$", request.data["username"]):
-                    # checking email
-                    if "email" in request.data and request.data["email"] != "" and request.data["email"] is not None:
-                        if User.objects.filter(email=request.data["email"]).exists():
-                            return Response({"error": 7})
-                        elif re.match("^[_.0-9a-z-]+@([0-9a-z][0-9a-z-]+.)+[a-z]{2,4}$", request.data["email"]):
-                            if "password" in request.data and request.data["password"] != "" \
-                                    and request.data["password"] is not None:
-                                if len(request.data["password"]) < 6:
-                                    return Response({"error": 9})
-                                elif len(request.data["password"]) > 20:
-                                    return Response({"error": 10})
-                                elif " " in request.data["password"]:
-                                    return Response({"error": 11})
-                                else:
-                                    if UserInfinityBan.objects.filter(device_unique_id=request.data["device_unique_id"]).exists():
-                                        return Response({"error": 86})
-                                    else:
-                                        user = User.objects.create(username=request.data["username"],
-                                                                   email=request.data["email"])
-                                        user.set_password(request.data["password"])
-                                        user.save()
-                                        token = Token.objects.create(user=user)
-                                        UserProfile.objects.create(user=user,
-                                                                   device_unique_id=request.data["device_unique_id"])
-                                        serializer = UserSerializer(user)
-                                        if UserNotification.objects.filter(device_token=request.data["device_token"]).exists():
-                                            UserNotification.objects.filter(device_token=request.data["device_token"]).delete()
-                                            UserNotification.objects.create(user_id=token.user_id,
-                                                                            device_token=request.data["device_token"])
-                                        else:
-                                            UserNotification.objects.create(user_id=token.user_id,
-                                                                            device_token=request.data["device_token"])
-                                        message = 'Welcome to Reach app!'
-                                        user.email_user('Reach. Welcome!', message)
-                                        return Response({"success": 1,
-                                                         "token": token.key,
-                                                         "user": serializer.data})
-                        else:
-                            return Response({"error": 8})
-                else:
-                    return Response({"error": 6})
+    # username validation
+    username = request.data.get('username')
+
+    if not username:
+        return
+
+    if User.objects.filter(username=username).exists():
+        return Response({"error": 2})
+    if len(username) < 4:
+        return Response({"error": 3})
+    if len(username) > 20:
+        return Response({"error": 4})
+    if " " in username:
+        return Response({"error": 5})
+    if not re.match("^[a-zA-Z0-9_]\w{3,19}$", username):
+        return Response({"error": 6})
+
+    # email validation
+    email = request.data.get('email')
+    if not email:
+        return Response({"error": 8})
+    if not re.match("^[_.0-9a-z-]+@([0-9a-z][0-9a-z-]+.)+[a-z]{2,4}$", email):
+        return Response({"error": 8})
+    if User.objects.filter(email=email).exists():
+        return Response({"error": 7})
+
+    # validate password
+    password = request.data.get('password')
+    if not password:
+        return Response({"error": 9})        
+    if len(password) < 6:
+        return Response({"error": 9})
+    if len(password) > 20:
+        return Response({"error": 10})
+    if " " in password:
+        return Response({"error": 11})
+    
+    # check banned device
+    device_unique_id = request.data.get('device_unique_id')
+    if UserInfinityBan.objects.filter(device_unique_id=device_unique_id).exists():
+        return Response({"error": 86})
+    
+    # create a user
+    user = User.objects.create(username=username, email=email)
+    user.set_password(password)
+    user.save()
+
+    # create a token and userprofile
+    token = Token.objects.create(user=user)
+    UserProfile.objects.create(user=user, device_unique_id=device_unique_id)
+
+    # create a user notification
+    device_token = request.data.get("device_token")
+    if UserNotification.objects.filter(device_token=device_token).exists():
+        UserNotification.objects.filter(device_token=device_token).delete()
+        UserNotification.objects.create(user_id=token.user_id,
+                                        device_token=device_token)
+    else:
+        UserNotification.objects.create(user_id=token.user_id,
+                                        device_token=device_token)
+        
+    message = 'Welcome to Reach app!'
+    serializer = UserSerializer(user)
+    send_email('Reach. Welcome!', message)
+
+    return Response({"success": 1,
+                     "token": token.key,
+                     "user": serializer.data})
 
 
 @api_view(["POST"])
@@ -2124,100 +2139,101 @@ Count unread user feed
 @api_view(["POST"])
 def status_code(request):
     """
-Status codes:
+    Status codes:
 
-    1 - registration successfully
-    2 - user with this username is already exist
-    3 - username is less than 4 symbols
-    4 - username is more than 20 symbols
-    5 - username contain space(s)
-    6 - username contain special character(s)
-    7 - user with this email is already exist
-    8 - email is not in format like qwe@qwe.qwe
-    9 - password is less that 6 symbols
-    10 - password is more that 20 symbols
-    11 - password contain space(s)
-    12 - login successfully
-    13 - successfully change password
-    14 - incorrect password
-    15 - recover password successfully
-    16 - user with this email doesn't exist
-    17 - token doesn't exist
-    18 - user_id is not integer
-    19 - user with this id doesn't exist
-    20 - getting user successfully
-    21 - post text is less than 1 symbol
-    22 - post text is more than 10000 symbols
-    23 - successfully add new post
-    24 - comment text is less that 10 symbols
-    25 - comment text is more that 255 symbols
-    26 - successfully add new comment
-    27 - post with this post_id doesn't exist
-    29 - successfully get user posts
-    30 - successfully send like
-    31 - you already like this post
-    32 - post with that ID doesn't exist
-    33 - successfully remove like
-    34 - you haven't like this post yet
-    35 - comment with that ID doesn't exist
-    36 - this is not your comment, can't remove
-    37 - successfully remove comment
-    38 - successfully send like/dislike to this comment
-    39 - you already like/dislike this comment
-    40 - you successfully change the best_response status
-    41 - you don't have permissions to mark comment as best response
-    42 - circle name must be more than 4 symbols
-    43 - circle name must be less than 50 symbols
-    44 - circle description must be more that 4 symbols
-    45 - circle description must be less than 500 symbols
-    46 - circle with that name is already exist
-    47 - successfully create a new circle
-    48 - successfully get all circles
-    49 - successfully get all created circles
-    50 - successfully get all joined circles
-    51 - circle with that id doesn't exist
-    52 - successfully get single circle
-    53 - you can't create a new topic in this circle(you aren't a member)
-    54 - successfully join/unjoin circle
-    55 - successfully created a new topic in circle
-    56 - successfully get single topic
-    57 - topic with that id doesn't exist
-    58 - successfully get all groups
-    59 - group with that id doesn't exist
-    60 - successfully change password
-    61 - successfully change biography
-    62 - successfully get user profile
-    63 - successfully get explore-popular
-    64 - successfully get explore-daily-upvotes
-    65 - successfully get explore-most-upvoted
-    66 - successfully search by hashtag
-    67 - successfully rate user
-    68 - successfully change user avatar
-    69 - successfully add user to your report list
-    70 - you already report this user
-    71 - successfully check report user
-    72 - successfully get reported users list
-    73 - successfully send report email
-    74 - successfully remove user from your report list
-    75 - this user not in your report list
-    76 - successfully get user feed
-    77 - successfully send direct request
-    78 - successfully allow request
-    79 - request with that id doesn't exist
-    80 - successfully check request status
-    81 - successfully send push "start call"
-    82 - successfully send push "new message"
-    83 - successfully connect facebook account
-    84 - successfully connect twitter account
-    85 - successfully connect instagram account
-    86 - you are banned
-    87 - successfully get single post
-    88 - post with that id doesn't exist
-    89 - successfully read user feed
-    90 - successfully count user unread feed
-    91 - successfully remove post
+        1 - registration successfully
+        2 - user with this username is already exist
+        3 - username is less than 4 symbols
+        4 - username is more than 20 symbols
+        5 - username contain space(s)
+        6 - username contain special character(s)
+        7 - user with this email is already exist
+        8 - email is not in format like qwe@qwe.qwe
+        9 - password is less that 6 symbols
+        10 - password is more that 20 symbols
+        11 - password contain space(s)
+        12 - login successfully
+        13 - successfully change password
+        14 - incorrect password
+        15 - recover password successfully
+        16 - user with this email doesn't exist
+        17 - token doesn't exist
+        18 - user_id is not integer
+        19 - user with this id doesn't exist
+        20 - getting user successfully
+        21 - post text is less than 1 symbol
+        22 - post text is more than 10000 symbols
+        23 - successfully add new post
+        24 - comment text is less that 10 symbols
+        25 - comment text is more that 255 symbols
+        26 - successfully add new comment
+        27 - post with this post_id doesn't exist
+        29 - successfully get user posts
+        30 - successfully send like
+        31 - you already like this post
+        32 - post with that ID doesn't exist
+        33 - successfully remove like
+        34 - you haven't like this post yet
+        35 - comment with that ID doesn't exist
+        36 - this is not your comment, can't remove
+        37 - successfully remove comment
+        38 - successfully send like/dislike to this comment
+        39 - you already like/dislike this comment
+        40 - you successfully change the best_response status
+        41 - you don't have permissions to mark comment as best response
+        42 - circle name must be more than 4 symbols
+        43 - circle name must be less than 50 symbols
+        44 - circle description must be more that 4 symbols
+        45 - circle description must be less than 500 symbols
+        46 - circle with that name is already exist
+        47 - successfully create a new circle
+        48 - successfully get all circles
+        49 - successfully get all created circles
+        50 - successfully get all joined circles
+        51 - circle with that id doesn't exist
+        52 - successfully get single circle
+        53 - you can't create a new topic in this circle(you aren't a member)
+        54 - successfully join/unjoin circle
+        55 - successfully created a new topic in circle
+        56 - successfully get single topic
+        57 - topic with that id doesn't exist
+        58 - successfully get all groups
+        59 - group with that id doesn't exist
+        60 - successfully change password
+        61 - successfully change biography
+        62 - successfully get user profile
+        63 - successfully get explore-popular
+        64 - successfully get explore-daily-upvotes
+        65 - successfully get explore-most-upvoted
+        66 - successfully search by hashtag
+        67 - successfully rate user
+        68 - successfully change user avatar
+        69 - successfully add user to your report list
+        70 - you already report this user
+        71 - successfully check report user
+        72 - successfully get reported users list
+        73 - successfully send report email
+        74 - successfully remove user from your report list
+        75 - this user not in your report list
+        76 - successfully get user feed
+        77 - successfully send direct request
+        78 - successfully allow request
+        79 - request with that id doesn't exist
+        80 - successfully check request status
+        81 - successfully send push "start call"
+        82 - successfully send push "new message"
+        83 - successfully connect facebook account
+        84 - successfully connect twitter account
+        85 - successfully connect instagram account
+        86 - you are banned
+        87 - successfully get single post
+        88 - post with that id doesn't exist
+        89 - successfully read user feed
+        90 - successfully count user unread feed
+        91 - successfully remove post
     """
     return Response({"status": "code"})
+
 
 @api_view(["POST"])
 def update_locate(request):
