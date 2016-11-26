@@ -23,6 +23,7 @@ from users.views import registration, login, forgot_password, get_user_by_id, st
     send_notification, task_notification, delete_chat_notification, get_notification_badge, delete_notifications, \
     client_token, create_purchase, get_contact_accept_notification, unfriend_task
 
+admin.site.site_header = 'Reach Admin'
 
 urlpatterns = patterns(
     '',
