@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Dashboard - Sign In</title>
+{% endblock title %}
+
+{% block content %}
+<div class="info-w sign-window">
+    <div class="info-w-bar">Please login to access this application</div>
+    <div class="info-w-body clearfix">
+        <form action="{% url 'sign_in' %}" method="POST">
+            {% csrf_token %}
+            {% if error %}
+            <div class="jinja-error">{{ error }}</div>
+            {% endif %}
+            <input type="text" name="username" placeholder="Username" required autofocus>
+            <input type="password" name="password" placeholder="********" required>
+            <input type="submit" value="Sign In" class="main-btn">
+        </form>
+    </div>
+
+</div>
+{% endblock content %}
