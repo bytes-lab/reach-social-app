@@ -1,5 +1,5 @@
 apns==2.0.1
-#braintree==3.31.0
+braintree==3.31.0
 Django==1.9.6
 django-filter==0.11.0
 djangorestframework==3.2.3
