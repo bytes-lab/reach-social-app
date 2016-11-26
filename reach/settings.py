@@ -204,5 +204,5 @@ GROUPS = [
     "Work Life"
 ]
 
-# SPATIALITE_LIBRARY_PATH = 'libspatialite' 
-SPATIALITE_LIBRARY_PATH = 'mod_spatialite' 
+SPATIALITE_LIBRARY_PATH = 'libspatialite' 
+# SPATIALITE_LIBRARY_PATH = 'mod_spatialite' 
