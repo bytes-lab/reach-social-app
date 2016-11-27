@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from users.models import *
 
 class CustomUserAdmin(UserAdmin):
-    list_display = ['username', 'email', 'location']
+    list_display = ['username', 'email', 'location', 'is_staff']
 
     def location(self, obj):
     	if obj.is_staff:
