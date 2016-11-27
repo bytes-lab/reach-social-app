@@ -1,6 +1,17 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from users.models import *
 
-from users.models import UserProfile, UserNotification, UserRate, UserReport, UserFeed, UserRequest, UserInfinityBan
+class CustomUserAdmin(UserAdmin):
+    list_display = ['username', 'email', 'location']
+
+    def location(self, obj):
+    	if obj.is_staff:
+    		return ''
+        return "({}, {})".format(obj.info.latitude, obj.info.longitude)
+
+admin.site.unregister(User)
+admin.site.register(User, CustomUserAdmin)
 
 admin.site.register(UserProfile)
 admin.site.register(UserNotification)

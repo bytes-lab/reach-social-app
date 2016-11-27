@@ -35,6 +35,9 @@ class UserProfile(models.Model):
         point = "POINT(0 0)"
         self.location = fromstr(point)
 
+    def __unicode__(self):
+        return self.user.username
+        
 
 class UserNotification(models.Model):
     user = models.ForeignKey(User)

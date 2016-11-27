@@ -5,5 +5,4 @@ django-filter==0.11.0
 djangorestframework==3.2.3
 facebook-sdk==0.4.0
 Markdown==2.6.4
-#pkg-resources==0.0.0
 requests==2.12.1
