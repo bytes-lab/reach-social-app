@@ -2511,63 +2511,62 @@ Get user by token method.
 @api_view(["POST"])
 def uget_user_by_token(request):
     """
-Get user by token method.
+    Get user by token method.
 
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df", 
-	"qbchat_id" : 234
-    }
+        Example json:
+        {
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df", 
+            "qbchat_id" : 234
+        }
 
-    Code statuses can be found here: /api/v1/docs/status-code/
+        Code statuses can be found here: /api/v1/docs/status-code/
 
-    Success json:
-    {
-        "user": {
-            "id": 1,
-            "username": "antonboksha",
-            "first_name": "Anton",
-            "last_name": "Boksha",
-            "email": "antonboksha@gmail.com",
-            "info": {
-                "full_name": "Anton Boksha",
-                "biography": "My short biography here!",
-                "like_count": 13,
-                "comment_count": 27,
-                "rate": 3,
-                "avatar": "/media/default_images/default.png",
-                "is_facebook": false,
-                "is_twitter": false,
-                "is_instagram": false
+        Success json:
+        {
+            "user": {
+                "id": 1,
+                "username": "antonboksha",
+                "first_name": "Anton",
+                "last_name": "Boksha",
+                "email": "antonboksha@gmail.com",
+                "info": {
+                    "full_name": "Anton Boksha",
+                    "biography": "My short biography here!",
+                    "like_count": 13,
+                    "comment_count": 27,
+                    "rate": 3,
+                    "avatar": "/media/default_images/default.png",
+                    "is_facebook": false,
+                    "is_twitter": false,
+                    "is_instagram": false
+                },
+                "count_downvoted": 1,
+                "count_upvoted": 1,
+                "count_likes": 1,
+                "count_comments": 1,
+                "complete_likes": 50
             },
-            "count_downvoted": 1,
-            "count_upvoted": 1,
-            "count_likes": 1,
-            "count_comments": 1,
-            "complete_likes": 50
-        },
-        "success": 20
-    }
+            "success": 20
+        }
 
-    Fail json:
-    {
-        "error": <status_code>
-    }
+        Fail json:
+        {
+            "error": <status_code>
+        }
     """
     if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                token = get_object_or_404(Token, key=request.data["token"])
+        token = request.data.get('token')
+        if token:
+            if Token.objects.filter(key=token).exists():
+                token = get_object_or_404(Token, key=token)
                 user = get_object_or_404(User, pk=token.user_id)
-		user = get_object_or_404(User, pk=token.user_id)
                 user_profile = get_object_or_404(UserProfile, user_id=token.user_id)
                 user_profile.qbchat_id = request.data["qbchat_id"]
                 user_profile.save()
                 serializer = UserSerializer(user)
                 return Response({"success": 20,
                                  "user": serializer.data})
-            else:
-                return Response({"error": 17})
+        return Response({"error": 17})
 
 
 @api_view(["POST"])

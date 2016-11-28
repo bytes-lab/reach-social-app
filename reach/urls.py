@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.conf.urls import include, url, patterns
+from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 
@@ -25,9 +25,8 @@ from users.views import registration, login, forgot_password, get_user_by_id, st
 
 admin.site.site_header = 'Reach Admin'
 
-urlpatterns = patterns(
-    '',
-    url(r'^admin/', include(admin.site.urls)),
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
     # docs
     url(r'^api/v1/docs/status-code/$', status_code),
     # registration and login system
@@ -142,4 +141,4 @@ urlpatterns = patterns(
     # main page with profile info
     url(r'^dashboard/$', dashboard, name="dashboard"),
 
-) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
