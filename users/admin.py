@@ -4,14 +4,21 @@ from users.models import *
 
 class CustomUserAdmin(UserAdmin):
     list_display = ['username', 'email', 'location', 'is_staff']
-    search_fields = ['username', 'email', 'info__city_name', 
-    	'info__state_name', 'info__country_name']
+    search_fields = ['username', 'email']
+
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super(CustomUserAdmin, self).get_search_results(request, queryset, search_term)
+
+        queryset |= self.model.objects.filter(info__city_name__icontains=search_term)
+        queryset |= self.model.objects.filter(info__state_name__icontains=search_term)
+        queryset |= self.model.objects.filter(info__country_name__icontains=search_term)
+        return queryset, use_distinct
 
     def location(self, obj):
-    	if obj.is_staff:
-    		return ''
+        if obj.is_staff:
+            return ''
         return "({}, {}, {})".format(obj.info.city_name, obj.info.state_name, 
-        	obj.info.country_name)
+            obj.info.country_name)
 
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
