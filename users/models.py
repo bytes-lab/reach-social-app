@@ -33,9 +33,10 @@ class UserProfile(models.Model):
     location = models.PointField(srid=4326, dim=3, blank=True, null=True)
     objects = models.GeoManager()
 
-    def save(self, **kwargs):
-        point = "POINT(0 0)"
-        self.location = fromstr(point)
+    # def save(self, **kwargs):
+    #     point = "POINT(0 0)"
+    #     self.location = fromstr(point)
+    #     super(UserProfile, self).save()        
 
     def __unicode__(self):
         return self.user.username

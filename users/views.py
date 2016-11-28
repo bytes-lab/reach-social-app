@@ -134,8 +134,7 @@ def registration(request):
 
     # create a token and userprofile
     token = Token.objects.create(user=user)
-    UserProfile.objects.create(user=user, device_unique_id=device_unique_id)
-
+    up = UserProfile.objects.create(user=user, device_unique_id=device_unique_id)
     # create a user notification
     device_token = request.data.get("device_token")
     if UserNotification.objects.filter(device_token=device_token).exists():
@@ -2389,7 +2388,7 @@ def contact_request(request):
                     otheruser_id=request.data["other_userid"], 
                     req_type=0)
                 return Response({"success": 20})
-                
+
             return Response({"error": 17})
 
 
