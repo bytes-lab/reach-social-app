@@ -2369,30 +2369,28 @@ Get user by token method.
 @api_view(["POST"])
 def contact_request(request):
     """
-Get user by token method.
+    Get user by token method.
 
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df", 
-        "user_id" : , 
-	"other_userid" :
-    }
-
-
+        Example json:
+        {
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df", 
+            "user_id" : , 
+            "other_userid" :
+        }
     """
     if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                token = get_object_or_404(Token, key=request.data["token"])
-	 	reqUser = get_object_or_404(User, pk=request.data["user_id"])
-		reqOtherUser = get_object_or_404(User, pk=request.data["other_userid"])
-		contactReq = ContactReq.objects.create(user=reqUser, 
-						       otheruser_id=request.data["other_userid"], 
-						       req_type=0)
-		contactReq.save()
+        token = request.data.get('token')
+        if not token:
+            if Token.objects.filter(key=token).exists():
+                token = get_object_or_404(Token, key=token)
+                reqUser = get_object_or_404(User, pk=request.data["user_id"])
+                reqOtherUser = get_object_or_404(User, pk=request.data["other_userid"])
+                contactReq = ContactReq.objects.create(user=reqUser, 
+                    otheruser_id=request.data["other_userid"], 
+                    req_type=0)
                 return Response({"success": 20})
-            else:
-                return Response({"error": 17})
+                
+            return Response({"error": 17})
 
 
 @api_view(["POST"])
