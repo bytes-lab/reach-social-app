@@ -4,11 +4,14 @@ from users.models import *
 
 class CustomUserAdmin(UserAdmin):
     list_display = ['username', 'email', 'location', 'is_staff']
+    search_fields = ['username', 'email', 'info__city_name', 
+    	'info__state_name', 'info__country_name']
 
     def location(self, obj):
     	if obj.is_staff:
     		return ''
-        return "({}, {})".format(obj.info.latitude, obj.info.longitude)
+        return "({}, {}, {})".format(obj.info.city_name, obj.info.state_name, 
+        	obj.info.country_name)
 
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)

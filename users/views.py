@@ -2238,45 +2238,47 @@ def status_code(request):
 @api_view(["POST"])
 def update_locate(request):
     """
-Update User locate.
+    Update User locate.
 
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
-        "country_name": "United States",
-	"city_name": "New York",
-	"latitude": 0.0,
-	"longitude": 0.0
-    }
+        Example json:
+        {
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
+            "country_name": "United States",
+            "city_name": "New York",
+            "latitude": 0.0,
+            "longitude": 0.0
+        }
 
-    Code statuses can be found here: /api/v1/docs/status-code/
+        Code statuses can be found here: /api/v1/docs/status-code/
 
-    Success json:
-    {
-        "success": 13
-    }
+        Success json:
+        {
+            "success": 13
+        }
 
-    Fail json:
-    {
-        "error": <status_code>
-    }
+        Fail json:
+        {
+            "error": <status_code>
+        }
     """
     if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                token = get_object_or_404(Token, key=request.data["token"])
+        token = request.data.get('token')
+        if token:
+            if Token.objects.filter(key=token).exists():
+                token = get_object_or_404(Token, key=token)
                 user = get_object_or_404(User, pk=token.user_id)
                 user_profile = get_object_or_404(UserProfile, user_id=token.user_id)
                 user_profile.country_name = request.data["country_name"]
-		user_profile.city_name = request.data["city_name"]
-		user_profile.latitude = request.data["latitude"]
-		user_profile.longitude = request.data["longitude"]
-                user_profile.location = Point(x=request.data["latitude"], y=request.data["longitude"], z=0, srid=4326)
+                user_profile.state_name = request.data.get('state_name', 'New york')
+                user_profile.city_name = request.data["city_name"]
+                user_profile.latitude = request.data["latitude"]
+                user_profile.longitude = request.data["longitude"]
+                user_profile.location = Point(x=request.data["latitude"], 
+                    y=request.data["longitude"], z=0, srid=4326)
                 user_profile.save()
                 serializer = UserSerializer(user)
                 return Response({"success": 61})
-            else:
-                return Response({"error": 17})
+        return Response({"error": 17})
 
 
 @api_view(["POST"])

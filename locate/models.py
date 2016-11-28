@@ -8,3 +8,7 @@ class Groups(models.Model):
     group_title = models.TextField(blank=True)
     group_bio = models.TextField(blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return self.creator.username
+    

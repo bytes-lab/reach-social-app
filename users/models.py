@@ -15,7 +15,8 @@ class UserProfile(models.Model):
     comment_count = models.PositiveIntegerField(default=0)
     rate = models.PositiveIntegerField(default=0)
     count_rates = models.PositiveIntegerField(default=0)
-    avatar = models.FileField(upload_to=get_file_path, default="/media/default_images/default.png")
+    avatar = models.FileField(upload_to=get_file_path, 
+        default="/media/default_images/default.png")
     is_facebook = models.BooleanField(default=False)
     is_twitter = models.BooleanField(default=False)
     is_instagram = models.BooleanField(default=False)
@@ -24,6 +25,7 @@ class UserProfile(models.Model):
     instagram_url = models.CharField(max_length=500, blank=True)
     device_unique_id = models.CharField(max_length=500)
     country_name = models.CharField(max_length=30, blank=True)
+    state_name = models.CharField(max_length=30, blank=True)
     city_name = models.CharField(max_length=30, blank=True)
     latitude = models.FloatField(default=-90)
     longitude = models.FloatField(default=-90)
