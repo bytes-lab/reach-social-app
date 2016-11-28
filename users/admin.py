@@ -65,7 +65,7 @@ class CustomUserAdmin(UserAdmin):
             user_['facebook_url'] = userprofile.facebook_url
             user_['twitter_url'] = userprofile.twitter_url
             user_['instagram_url'] = userprofile.instagram_url
-            result_csv.writerow(business_)
+            result_csv.writerow(user_)
 
         result.close()
         msg = "{} user(s) successfully exported.".format(queryset.count())
