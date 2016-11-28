@@ -2379,15 +2379,14 @@ def contact_request(request):
     """
     if request.method == "POST":
         token = request.data.get('token')
-        if not token:
-            if Token.objects.filter(key=token).exists():
-                token = get_object_or_404(Token, key=token)
-                reqUser = get_object_or_404(User, pk=request.data["user_id"])
-                reqOtherUser = get_object_or_404(User, pk=request.data["other_userid"])
-                contactReq = ContactReq.objects.create(user=reqUser, 
-                    otheruser_id=request.data["other_userid"], 
-                    req_type=0)
-                return Response({"success": 20})
+        if Token.objects.filter(key=token).exists():
+            token = get_object_or_404(Token, key=token)
+            reqUser = get_object_or_404(User, pk=request.data["user_id"])
+            reqOtherUser = get_object_or_404(User, pk=request.data["other_userid"])
+            
+            contactReq = ContactReq.objects.create(user=reqUser, 
+                otheruser=reqOtherUser)
+            return Response({"success": 20})
 
         return Response({"error": 17})
 

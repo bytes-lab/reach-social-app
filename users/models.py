@@ -62,6 +62,9 @@ class ContactReq(models.Model):
     req_type = models.PositiveIntegerField(default=0)
     date = models.DateTimeField(auto_now_add=True)
 
+    def __unicode__(self):
+        return "{} - {}".format(self.user, self.otheruser)
+
 
 class PushNotification(models.Model):
     user = models.ForeignKey(User, related_name='pushnotification_users')
