@@ -5,15 +5,13 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
 from users.models import UserNotification
-
 from reach.settings import APNS_CERF_PATH, APNS_CERF_SANDBOX_MODE
-
 from apns import APNs, Payload
 
 
 def sign_in(request):
     if request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('dashboard'))
+        return HttpResponseRedirect(reverse('broadcast_notification'))
     else:
         error = None
         if request.method == "POST":
@@ -23,7 +21,7 @@ def sign_in(request):
                     auth_user = authenticate(username=request.POST["username"],
                                              password=request.POST["password"])
                     login(request, auth_user)
-                    return HttpResponseRedirect(reverse('dashboard'))
+                    return HttpResponseRedirect(reverse('broadcast_notification'))
                 else:
                     error = "Incorrect password!"
             else:
@@ -32,21 +30,41 @@ def sign_in(request):
 
 
 @login_required(login_url='/')
-def dashboard(request):
+def broadcast_notification(request):
+    user_ids = request.GET.get('ids').split(',')
+
     if request.method == "POST":
         message = request.POST["title"]
         custom = {
             "message": request.POST["text"]
         }
+
         apns = APNs(use_sandbox=APNS_CERF_SANDBOX_MODE, cert_file=APNS_CERF_PATH)
-        payload = Payload(alert=message, sound="default", category="TEST", badge=1, custom=custom)
-        notification_ids = UserNotification.objects.all().values_list("device_token", flat=True)
-        for notification_id in notification_ids:
+        payload = Payload(alert=message, sound="default", 
+            category="TEST", badge=1, custom=custom)
+
+        for nf in UserNotification.objects.filter(user_id__in=user_ids):
             try:
-                apns.gateway_server.send_notification(notification_id, payload)
+                device_token = nf.device_token.replace('-', '')
+                apns.gateway_server.send_notification(device_token, payload)
             except:
-                pass
+                print device_token, '######'
     return render(request, 'send_push.html')
+
+
+@login_required(login_url='/')
+def broadcast_email(request):
+    user_ids = request.GET.get('ids').split(',')
+
+    if request.method == "POST":
+        subject = request.POST["subject"]
+        content = request.POST["content"]
+
+        for user in User.objects.filter(id__in=user_ids):
+            user.email_user(subject, content)
+
+        return HttpResponseRedirect('/admin/auth/user')
+    return render(request, 'broadcast_email.html')
 
 
 @login_required(login_url='/')

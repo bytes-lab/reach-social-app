@@ -6,7 +6,7 @@ from django.contrib import admin
 from circles.views import create_new_circle, get_all_circles, get_created_circles, get_joined_circles, get_circle, \
     join_circle, create_new_topic, get_topic, get_groups, send_reply, get_all_circles_search, \
     get_created_circles_search, get_joined_circles_search, group_circle, group_notification
-from dashboard.views import sign_in, dashboard, logout_user
+from dashboard.views import sign_in, broadcast_notification, logout_user, broadcast_email
 from locate.views import create_group
 from posts.views import add_new_post, add_new_comment, get_user_posts, send_like, remove_like, rate_comment, \
     mark_best_response, explore_popular, explore_daily_upvotes, explore_most_upvoted, search_by_hashtag, \
@@ -139,6 +139,7 @@ urlpatterns = [
     url(r'^$', sign_in, name="sign_in"),
     url(r'^logout/$', logout_user, name="logout_user"),
     # main page with profile info
-    url(r'^dashboard/$', dashboard, name="dashboard"),
+    url(r'^broadcast_notification/', broadcast_notification, name="broadcast_notification"),
+    url(r'^broadcast_email/', broadcast_email, name="broadcast_email"),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

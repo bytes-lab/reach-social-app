@@ -2,18 +2,18 @@
 {% load staticfiles %}
 
 {% block title %}
-    <title>Broadcast Notification</title>
+    <title>Broadcast Email</title>
 {% endblock title %}
 
 {% block content %}
     <div class="logo">
         <img src="{% static 'img/logo-icon@3x.png' %}" alt="">
-        <h2>Send A Notification</h2>
+        <h2>Send An Email</h2>
     </div>
     <form method="POST" class="push-form">
         {% csrf_token %}
-        <input name="title" type="text" placeholder="Title" maxlength="100" required autofocus>
-        <textarea name="text"  cols="45" rows="8" placeholder="Message" maxlength="500" required></textarea>
+        <input name="subject" type="text" placeholder="Subject" maxlength="100" required autofocus>
+        <textarea name="content"  cols="45" rows="8" placeholder="Content" maxlength="500" required></textarea>
         <input type="submit" value="Send" class="main-btn">
         <input type="button" value="Back" class="main-btn" onclick="history.go(-1);">
     </form>

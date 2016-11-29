@@ -126,7 +126,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 # APNS cerf
-APNS_CERF_PATH = '/home/ubuntu/reach/project/iphone_ck_prod.pem'
+APNS_CERF_PATH = BASE_DIR+'/iphone_ck_prod.pem'
 APNS_CERF_SANDBOX_MODE = False
 
 # Lazy load

@@ -147,7 +147,8 @@ def registration(request):
         
     message = 'Welcome to Reach app!'
     serializer = UserSerializer(user)
-    send_email('Reach. Welcome!', message)
+    # send_email('Reach. Welcome!', message)
+    user.email_user('Reach. Welcome!', message)
 
     return Response({"success": 1,
                      "token": token.key,
@@ -283,65 +284,59 @@ User recover password method.
 @api_view(["POST"])
 def get_user_by_id(request):
     """
-Get user by id method.
+    Get user by id method.
 
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
-        "user_id": 1
-    }
+        Example json:
+        {
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
+            "user_id": 1
+        }
 
-    Code statuses can be found here: /api/v1/docs/status-code/
+        Code statuses can be found here: /api/v1/docs/status-code/
 
-    Success json:
-    {
-        "user": {
-            "id": 1,
-            "username": "antonboksha",
-            "first_name": "Anton",
-            "last_name": "Boksha",
-            "email": "antonboksha@gmail.com",
-            "info": {
-                "full_name": "Anton Boksha",
-                "biography": "My short biography here!",
-                "like_count": 13,
-                "comment_count": 27,
-                "rate": 3,
-                "avatar": "/media/default_images/default.png",
-                "is_facebook": false,
-                "is_twitter": false,
-                "is_instagram": false
+        Success json:
+        {
+            "user": {
+                "id": 1,
+                "username": "antonboksha",
+                "first_name": "Anton",
+                "last_name": "Boksha",
+                "email": "antonboksha@gmail.com",
+                "info": {
+                    "full_name": "Anton Boksha",
+                    "biography": "My short biography here!",
+                    "like_count": 13,
+                    "comment_count": 27,
+                    "rate": 3,
+                    "avatar": "/media/default_images/default.png",
+                    "is_facebook": false,
+                    "is_twitter": false,
+                    "is_instagram": false
+                },
+                "count_downvoted": 1,
+                "count_upvoted": 1,
+                "count_likes": 1,
+                "count_comments": 1,
+                "complete_likes": 50
             },
-            "count_downvoted": 1,
-            "count_upvoted": 1,
-            "count_likes": 1,
-            "count_comments": 1,
-            "complete_likes": 50
-        },
-        "success": 20
-    }
+            "success": 20
+        }
 
-    Fail json:
-    {
-        "error": <status_code>
-    }
+        Fail json:
+        {
+            "error": <status_code>
+        }
     """
     if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                if "user_id" in request.data and request.data["user_id"] != "" and request.data["user_id"] is not None:
-                    if type(request.data["user_id"]) is int:
-                        if User.objects.filter(pk=request.data["user_id"]).exists():
-                            user = get_object_or_404(User, pk=request.data["user_id"])
-                            serializer = UserSerializer(user)
-                            return Response({"success": 20,
-                                             "user": serializer.data})
-                        else:
-                            return Response({"error": 19})
-                    else:
-                        return Response({"error": 18})
-            else:
-                return Response({"error": 17})
+        token = request.data.get('token')
+        user_id = request.data.get('user_id')
+        if Token.objects.filter(key=token).exists():
+            if type(user_id) is int:
+                user = get_object_or_404(User, pk=user_id)
+                serializer = UserSerializer(user)
+                return Response({"success": 20, "user": serializer.data})
+            return Response({"error": 18})
+        return Response({"error": 17})
 
 
 @api_view(["POST"])
@@ -2319,50 +2314,41 @@ Update User locate.
 @api_view(["POST"])
 def get_user_by_name(request):
     """
-Get user by token method.
+    Get user by token method.
 
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df", 
-	"username" : ""
-    }
-
-
+        Example json:
+        {
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df", 
+            "username" : ""
+        }
     """
     if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                user = get_object_or_404(User, username=request.data["username"])
-                serializer = UserSerializer(user)
-                return Response({"success": 20,
-                                 "user": serializer.data})
-            else:
-                return Response({"error": 17})
+        token = request.data.get('token')
+        if Token.objects.filter(key=token).exists():
+            user = get_object_or_404(User, username=request.data["username"])
+            serializer = UserSerializer(user)
+            return Response({"success": 20, "user": serializer.data})
+        return Response({"error": 17})
+
 
 @api_view(["POST"])
 def search_user_by_name(request):
     """
-Get user by token method.
+    Get user by token method.
 
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df", 
-        "username" : ""
-    }
-
-
+        Example json:
+        {
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df", 
+            "username" : ""
+        }
     """
     if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
- 		token = get_object_or_404(Token, key=request.data["token"])
-		user=User.objects.filter(username__contains=request.data["username"]).exclude(pk=token.user_id)
-
-                serializer = UserSerializer(user, many=True)
-                return Response({"success": 20,
-                                 "user": serializer.data})
-            else:
-                return Response({"error": 17})
+        token = get_object_or_404(Token, key=request.data.get("token"))
+        user = User.objects.filter(username__contains=request.data["username"]).exclude(pk=token.user_id)
+        if user:
+            serializer = UserSerializer(user, many=True)
+            return Response({"success": 20, "user": serializer.data})
+        return Response({"error": 17})
 
 
 @api_view(["POST"])

@@ -4,18 +4,20 @@ import datetime
 import mimetypes
 
 from django.contrib import admin
+from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from django.contrib.auth.admin import UserAdmin
 from django.utils.encoding import smart_str
 from wsgiref.util import FileWrapper
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 from users.models import *
+
 
 class CustomUserAdmin(UserAdmin):
     list_display = ['username', 'email', 'location', 'is_staff']
     search_fields = ['username', 'email']
-    actions = ['export_users']
+    actions = ['export_users', 'send_email_to_users', 'send_notification_to_users']
 
     def get_search_results(self, request, queryset, search_term):
         queryset, use_distinct = super(CustomUserAdmin, self).get_search_results(request, queryset, search_term)
@@ -81,12 +83,25 @@ class CustomUserAdmin(UserAdmin):
 
     export_users.short_description = "Export users as CSV file"
 
+    def send_email_to_users(modeladmin, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect("/broadcast_email/?ids=%s" % (",".join(selected)))
+
+    send_email_to_users.short_description = "Send an Email to Users"
+
+    def send_notification_to_users(modeladmin, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect("/broadcast_notification/?ids=%s" % (",".join(selected)))
+
+    send_notification_to_users.short_description = "Send a Notification to Users"
+
 
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 
 admin.site.register(UserProfile)
 admin.site.register(PushNotification)
+admin.site.register(UserNotification)
 admin.site.register(UserRate)
 admin.site.register(UserReport)
 admin.site.register(UserFeed)
