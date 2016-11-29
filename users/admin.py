@@ -86,7 +86,7 @@ admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 
 admin.site.register(UserProfile)
-admin.site.register(UserNotification)
+admin.site.register(PushNotification)
 admin.site.register(UserRate)
 admin.site.register(UserReport)
 admin.site.register(UserFeed)

@@ -76,6 +76,9 @@ class PushNotification(models.Model):
     category = models.CharField(max_length=50, blank=True)
     custom = models.TextField()
 
+    def __unicode__(self):
+        return "{} - {}".format(self.fromuser, self.user)
+
 
 class UserRate(models.Model):
     sender = models.ForeignKey(User, related_name="sender_rate")

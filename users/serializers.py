@@ -56,6 +56,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("id", "username", "first_name", "last_name", "email", "info", "count_downvoted", "count_upvoted",
                   "count_likes", "count_comments", "complete_likes")
 
+
 class ChatContactsSerializer(serializers.ModelSerializer):
     otheruser = UserSerializer(read_only=True)
 
@@ -63,13 +64,16 @@ class ChatContactsSerializer(serializers.ModelSerializer):
         model = ChatContacts
         fields = ("id",  "user",  "otheruser", "favourite_type" )
 
+
 class PushNotificationSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     fromuser = UserSerializer(read_only=True)
 
     class Meta:
-	model = PushNotification
-	fields = ("user", "fromuser", "alert_type", "reading_type", "alert", "sound", "category", "custom")
+        model = PushNotification
+        fields = ("user", "fromuser", "alert_type", "reading_type", "alert", 
+            "sound", "category", "custom")
+
 
 class ContactReqSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -81,6 +85,7 @@ class ContactReqSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactReq
         fields = ("id", "user", "otheruser", "req_type", "date")
+
 
 class UserReportSerializer(serializers.ModelSerializer):
     reported = UserSerializer(read_only=True)

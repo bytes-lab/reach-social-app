@@ -2383,7 +2383,7 @@ def contact_request(request):
             token = get_object_or_404(Token, key=token)
             reqUser = get_object_or_404(User, pk=request.data["user_id"])
             reqOtherUser = get_object_or_404(User, pk=request.data["other_userid"])
-            
+
             contactReq = ContactReq.objects.create(user=reqUser, 
                 otheruser=reqOtherUser)
             return Response({"success": 20})
@@ -2833,38 +2833,33 @@ def create_purchase(request):
 @api_view(["POST"])
 def get_contact_accept_notification(request):
     """
-Get Contact Accept Chat Notification.
+    Get Contact Accept Chat Notification.
 
-    Example json:
-    {   
-        "user_id": 12
-    }
+        Example json:
+        {   
+            "user_id": 12
+        }
 
-    Code statuses can be found here: /api/v1/docs/status-code/
+        Code statuses can be found here: /api/v1/docs/status-code/
 
-    Success json:
-    {
-	"success": 60, 
-	"result": []
-    }
-    Fail json:
-    {
-        "error": <status_code>
-    }
+        Success json:
+        {
+            "success": 60, 
+            "result": []
+        }
+        Fail json:
+        {
+            "error": <status_code>
+        }
     """
     if request.method == "POST":
-                if PushNotification.objects.filter(reading_type=1, alert_type=4, user=request.data["user_id"]).exists():
-                        pushNotifications = PushNotification.objects.filter(reading_type=1, alert_type=4, user=request.data["user_id"])
-                        if pushNotifications.count() == 0:
-                                return Response({"error": 79})
-			result = PushNotificationSerializer(pushNotifications, many=True)			
-                        return Response({"success": 60,
-                                         "result": result.data})
-
-                else:
-                        return Response({"error": 79})
-    else:
-                return Response({"error": 79})
+        user_id = request.data["user_id"]
+        pn = pushNotifications = PushNotification.objects.filter(reading_type=1, 
+            alert_type=4, user=user_id)
+        if pn:
+            result = PushNotificationSerializer(pn, many=True)			
+            return Response({"success": 60, "result": result.data})
+        return Response({"error": 79})
 
 
 @api_view(["POST"])
