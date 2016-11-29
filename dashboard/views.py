@@ -11,7 +11,7 @@ from apns import APNs, Payload
 
 def sign_in(request):
     if request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('broadcast_notification'))
+        return HttpResponseRedirect('/admin/')
     else:
         error = None
         if request.method == "POST":
