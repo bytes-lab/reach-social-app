@@ -103,7 +103,7 @@ def registration(request):
         return Response({"error": 6})
 
     # email validation
-    email = request.data.get('email')
+    email = request.data.get('email', '').lower()
     if not email:
         return Response({"error": 8})
     if not re.match("^[_.0-9a-z-]+@([0-9a-z][0-9a-z-]+.)+[a-z]{2,4}$", email):
@@ -158,88 +158,81 @@ def registration(request):
 @api_view(["POST"])
 def login(request):
     """
-User login method.
+    User login method.
 
-    Example json:
-    {
-        "email":"antonboksha@gmail.com",
-        "password":"qwerty",
-        "device_token": "devicetokengoeshere",
-        "device_unique_id": "devicegoeshere"
-    }
-
-    Code statuses can be found here: /api/v1/docs/status-code/
-
-    Success json:
-    {
-        "success": 12,
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
-        "user": {
-            "id": 3,
-            "username": "antonboksha",
-            "first_name": "Anton",
-            "last_name": "Boksha",
-            "email": "antonboksha@gmail.com",
-            "info": {
-                    "full_name": "Anton Boksha",
-                    "biography": "My short biography here!",
-                    "like_count": 13,
-                    "comment_count": 27,
-                    "rate": 3,
-                    "avatar": "/media/default_images/default.png",
-                    "is_facebook": false,
-                    "is_twitter": false,
-                    "is_instagram": false
-            },
-            "count_downvoted": 1,
-            "count_upvoted": 1,
-            "count_likes": 1,
-            "count_comments": 1,
-            "complete_likes": 50
+        Example json:
+        {
+            "email":"antonboksha@gmail.com",
+            "password":"qwerty",
+            "device_token": "devicetokengoeshere",
+            "device_unique_id": "devicegoeshere"
         }
-    }
 
-    Fail json:
-    {
-        "error": <status_code>
-    }
+        Code statuses can be found here: /api/v1/docs/status-code/
+
+        Success json:
+        {
+            "success": 12,
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
+            "user": {
+                "id": 3,
+                "username": "antonboksha",
+                "first_name": "Anton",
+                "last_name": "Boksha",
+                "email": "antonboksha@gmail.com",
+                "info": {
+                        "full_name": "Anton Boksha",
+                        "biography": "My short biography here!",
+                        "like_count": 13,
+                        "comment_count": 27,
+                        "rate": 3,
+                        "avatar": "/media/default_images/default.png",
+                        "is_facebook": false,
+                        "is_twitter": false,
+                        "is_instagram": false
+                },
+                "count_downvoted": 1,
+                "count_upvoted": 1,
+                "count_likes": 1,
+                "count_comments": 1,
+                "complete_likes": 50
+            }
+        }
+
+        Fail json:
+        {
+            "error": <status_code>
+        }
     """
     if request.method == "POST":
-        if "email" in request.data and request.data["email"] != "" and request.data["email"] is not None:
-            if User.objects.filter(email=request.data["email"]).exists():
-                if re.match("^[_.0-9a-z-]+@([0-9a-z][0-9a-z-]+.)+[a-z]{2,4}$", request.data["email"]):
-                    if "password" in request.data and request.data["password"] != "" \
-                            and request.data["password"] is not None:
-                        if len(request.data["password"]) < 6:
-                            return Response({"error": 9})
-                        elif len(request.data["password"]) > 20:
-                            return Response({"error": 10})
-                        elif " " in request.data["password"]:
-                            return Response({"error": 11})
-                        else:
-                            if UserInfinityBan.objects.filter(device_unique_id=request.data["device_unique_id"]).exists():
-                                return Response({"error": 86})
-                            else:
-                                user = get_object_or_404(User, email=request.data["email"])
-                                token = get_object_or_404(Token, user=user)
-                                if user.check_password(request.data["password"]):
-                                    if UserNotification.objects.filter(user_id=token.user_id).exists():
-                                        UserNotification.objects.filter(user_id=token.user_id).delete()
-                                        UserNotification.objects.create(user_id=token.user_id,
-                                                                        device_token=request.data["device_token"])
-                                    else:
-                                        UserNotification.objects.create(user_id=token.user_id,
-                                                                        device_token=request.data["device_token"])
-                                    serializer = UserSerializer(user)
-                                    return Response({"success": 12,
-                                                     "token": token.key,
-                                                     "user": serializer.data})
-                                else:
-                                    return Response({"error": 14})
-                else:
-                    return Response({"error": 8})
+        email = request.data.get('email', '').lower()
+        password = request.data.get('password', '')
+        device_unique_id = request.data.get("device_unique_id")
+
+        if not User.objects.filter(email=email).exists():
+            return Response({"error": 16})
+
+        if UserInfinityBan.objects.filter(device_unique_id=device_unique_id).exists():
+            return Response({"error": 86})
+
+        user = get_object_or_404(User, email=email)
+        token = get_object_or_404(Token, user=user)
+
+        if user.check_password(password):
+            if UserNotification.objects.filter(user_id=token.user_id).exists():
+                UserNotification.objects.filter(user_id=token.user_id).delete()
+                UserNotification.objects.create(user_id=token.user_id,
+                                                device_token=request.data["device_token"])
             else:
-                return Response({"error": 16})
+                UserNotification.objects.create(user_id=token.user_id,
+                                                device_token=request.data["device_token"])
+                
+            serializer = UserSerializer(user)
+            return Response({"success": 12,
+                             "token": token.key,
+                             "user": serializer.data})
+        else:
+            return Response({"error": 14})
 
 
 @api_view(["POST"])

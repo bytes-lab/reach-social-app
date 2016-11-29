@@ -109,7 +109,7 @@ body {
     font-weight: bold;
 }
 .main-btn {
-    min-width:150px !important;
+    min-width:125px !important;
     border-radius: 100px;
     text-align: center;
     color: #00c0ff;
@@ -120,6 +120,7 @@ body {
     cursor: pointer;
     background: #fff;
     outline: none;
+    height: 32px !important;
 }
 .main-btn:hover {
     color: #fff;
