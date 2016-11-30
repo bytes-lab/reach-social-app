@@ -127,14 +127,20 @@ def registration(request):
     if UserInfinityBan.objects.filter(device_unique_id=device_unique_id).exists():
         return Response({"error": 86})
     
+    first_name = request.data.get('first_name', '')
+    last_name = request.data.get('last_name', '')
+    birthday = request.data.get('birthday')
+
     # create a user
-    user = User.objects.create(username=username, email=email)
+    user = User.objects.create(username=username, email=email, 
+        first_name=first_name, last_name=last_name)
     user.set_password(password)
     user.save()
 
     # create a token and userprofile
     token = Token.objects.create(user=user)
-    up = UserProfile.objects.create(user=user, device_unique_id=device_unique_id)
+    up = UserProfile.objects.create(user=user, device_unique_id=device_unique_id,
+        full_name="{} {}".format(first_name, last_name), birthday=birthday)
     # create a user notification
     device_token = request.data.get("device_token")
     if UserNotification.objects.filter(device_token=device_token).exists():

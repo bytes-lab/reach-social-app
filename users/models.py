@@ -10,6 +10,7 @@ from utils import get_file_path
 class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name="info")
     full_name = models.CharField(max_length=255, blank=True)
+    birthday = models.DateField(blank=True, null=True)
     biography = models.TextField(blank=True)
     like_count = models.PositiveIntegerField(default=0)
     comment_count = models.PositiveIntegerField(default=0)
