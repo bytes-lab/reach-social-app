@@ -10,6 +10,8 @@ from apns import APNs, Payload
 
 
 def sign_in(request):
+    return HttpResponseRedirect('/admin/')
+    
     if request.user.is_authenticated():
         return HttpResponseRedirect('/admin/')
     else:
@@ -21,7 +23,7 @@ def sign_in(request):
                     auth_user = authenticate(username=request.POST["username"],
                                              password=request.POST["password"])
                     login(request, auth_user)
-                    return HttpResponseRedirect(reverse('broadcast_notification'))
+                    return HttpResponseRedirect(reverse('sign_in'))
                 else:
                     error = "Incorrect password!"
             else:
