@@ -21,6 +21,7 @@ from utils import send_email
 import re
 import json
 import urllib2
+import datetime
 from base64 import b64decode
 
 from apns import APNs, Payload
@@ -43,6 +44,9 @@ def registration(request):
         Example json:
         {
             "username":"antonboksha",
+            "first_name": "Anton",
+            "last_name": "Boksha",
+            "birthday": "1987-12-27",
             "email":"antonboksha@gmail.com",
             "password":"qwerty",
             "device_token": "devicetokengoeshere",
@@ -127,9 +131,17 @@ def registration(request):
     if UserInfinityBan.objects.filter(device_unique_id=device_unique_id).exists():
         return Response({"error": 86})
     
-    first_name = request.data.get('first_name', '')
-    last_name = request.data.get('last_name', '')
-    birthday = request.data.get('birthday')
+    first_name = request.data.get('first_name')
+    last_name = request.data.get('last_name')
+
+    if not (first_name and last_name):
+        return Response({"error": 'First name and Last name should be provided.'})
+
+    try:
+        birthday = request.data.get('birthday')
+        birthday = datetime.datetime.strptime(birthday, '%Y-%m-%d')
+    except Exception, e:
+        return Response({"error": 'Birthday should be in YYYY-MM-DD format.'})
 
     # create a user
     user = User.objects.create(username=username, email=email, 
