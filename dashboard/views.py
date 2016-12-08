@@ -51,6 +51,7 @@ def broadcast_notification(request):
                 apns.gateway_server.send_notification(device_token, payload)
             except:
                 print device_token, '######'
+                raise
 
     return render(request, 'send_push.html')
 
