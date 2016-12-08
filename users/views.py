@@ -40,8 +40,6 @@ braintree.Configuration.configure(braintree.Environment.Sandbox,
                                   public_key="6kjkyb6gknjbk6k9",
                                   private_key="2cef56043deef9273ba5fe21be10251a")
 
-client = MailChimp('jason5001002', 'aa316c4894783a929c6b9bee8ed15740-us14')
-sg = sendgrid.SendGridAPIClient(apikey='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')
 
 @api_view(["POST"])
 def registration(request):
