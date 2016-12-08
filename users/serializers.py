@@ -11,8 +11,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
     rate = serializers.SerializerMethodField("get_user_rate")
 
     def get_user_rate(self, obj):
-        if obj.rate != 0:
-            return obj.rate / obj.count_rates
+        # if obj.rate != 0:
+        #     return obj.rate / obj.count_rates
         return 0
 
     class Meta:

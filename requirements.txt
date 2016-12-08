@@ -6,3 +6,5 @@ djangorestframework==3.2.3
 facebook-sdk==0.4.0
 Markdown==2.6.4
 requests==2.12.1
+mailchimp3
+sendgrid

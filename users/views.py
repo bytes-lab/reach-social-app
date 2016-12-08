@@ -14,7 +14,7 @@ from circles.models import Circle
 from users.serializers import UserSerializer, UserReportSerializer, UserFeedSerializer, UserRequestSerializer, ChatContactsSerializer, ContactReqSerializer, PushNotificationSerializer
 from circles.serializers import CircleSerializer
 
-from reach.settings import APNS_CERF_PATH, APNS_CERF_SANDBOX_MODE, FEED_PAGE_OFFSET
+from reach.settings import APNS_CERF_PATH, APNS_CERF_SANDBOX_MODE, FEED_PAGE_OFFSET, BASE_DIR
 
 from utils import send_email
 
@@ -24,9 +24,13 @@ import urllib2
 import datetime
 from base64 import b64decode
 
+import sendgrid
+from sendgrid.helpers.mail import *
+
 from apns import APNs, Payload
 import facebook
 import braintree
+from mailchimp3 import MailChimp
 
 from django.contrib.gis.geos import *
 from django.contrib.gis.measure import D
@@ -35,6 +39,9 @@ braintree.Configuration.configure(braintree.Environment.Sandbox,
                                   merchant_id="k5n223gdbkt49kc6",
                                   public_key="6kjkyb6gknjbk6k9",
                                   private_key="2cef56043deef9273ba5fe21be10251a")
+
+client = MailChimp('jason5001002', 'aa316c4894783a929c6b9bee8ed15740-us14')
+sg = sendgrid.SendGridAPIClient(apikey='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')
 
 @api_view(["POST"])
 def registration(request):
@@ -149,10 +156,22 @@ def registration(request):
     user.set_password(password)
     user.save()
 
+    # send registration email    
+    from_email = Email("test@example.com")
+    subject = "Welcome to Reach Anonymous"
+    to_email = Email(user.email)
+
+    path = BASE_DIR + '/media/email_templates/signup.html'
+    temp = open(path, 'r')
+    content = temp.read().replace('[USERNAME]', user.first_name)
+    content = Content("text/html", content)
+    mail = Mail(from_email, subject, to_email, content)
+    response = sg.client.mail.send.post(request_body=mail.get())
+
     # create a token and userprofile
     token = Token.objects.create(user=user)
     up = UserProfile.objects.create(user=user, device_unique_id=device_unique_id,
-        full_name="{} {}".format(first_name, last_name), birthday=birthday)
+        full_name="{} {}".format(first_name, last_name), birthday=birthday, rate=-1)
     # create a user notification
     device_token = request.data.get("device_token")
     if UserNotification.objects.filter(device_token=device_token).exists():
@@ -166,7 +185,7 @@ def registration(request):
     message = 'Welcome to Reach app!'
     serializer = UserSerializer(user)
     # send_email('Reach. Welcome!', message)
-    user.email_user('Reach. Welcome!', message)
+    # user.email_user('Reach. Welcome!', message)
 
     return Response({"success": 1,
                      "token": token.key,
@@ -276,20 +295,72 @@ User recover password method.
     }
     """
     if request.method == "POST":
-        if "email" in request.data and request.data["email"] != "" and request.data["email"] is not None:
-            if User.objects.filter(email=request.data["email"]).exists():
-                if re.match("^[_.0-9a-z-]+@([0-9a-z][0-9a-z-]+.)+[a-z]{2,4}$", request.data["email"]):
-                    user = get_object_or_404(User, email=request.data["email"])
+        email = request.data.get('email')
+        if email:
+            if User.objects.filter(email=email).exists():
+                if re.match("^[_.0-9a-z-]+@([0-9a-z][0-9a-z-]+.)+[a-z]{2,4}$", email):
+                    user = get_object_or_404(User, email=email)
                     new_password = User.objects.make_random_password()
                     user.set_password(new_password)
                     user.save()
-                    message = 'Your new password is: ' + new_password
-                    user.email_user('Reach. Your new password!', message)
+                    # message = 'Your new password is: ' + new_password
+                    # user.email_user('Reach. Your new password!', message)
+
+                    # send registration email    
+                    from_email = Email("test@example.com")
+                    subject = "Reset Password"
+                    to_email = Email(email)
+                    
+                    path = BASE_DIR + '/media/email_templates/new_password.html'
+                    temp = open(path, 'r')
+                    content = temp.read().replace('[USERNAME]', email).replace('[PASSWORD]', new_password)
+                    content = Content("text/html", content)
+                    mail = Mail(from_email, subject, to_email, content)
+                    response = sg.client.mail.send.post(request_body=mail.get())
+
                     return Response({"success": 15})
                 else:
                     return Response({"error": 8})
             else:
                 return Response({"error": 16})
+
+
+@api_view(["POST"])
+def contactus(request):
+    email = request.data.get('email')
+    if email:
+        if User.objects.filter(email=email).exists():
+            if re.match("^[_.0-9a-z-]+@([0-9a-z][0-9a-z-]+.)+[a-z]{2,4}$", email):
+                user = get_object_or_404(User, email=email)
+                
+                # send contact accepted email to user
+                from_email = Email("test@example.com")
+                subject = "Contact Accepted"
+                to_email = Email(email)
+                
+                path = BASE_DIR + '/media/email_templates/contactus_user.html'
+                temp = open(path, 'r')
+                content = temp.read().replace('[USERNAME]', user.first_name)
+                content = Content("text/html", content)
+                mail = Mail(from_email, subject, to_email, content)
+                response = sg.client.mail.send.post(request_body=mail.get())
+
+                # send contact accepted email to admin
+                from_email = Email("test@example.com")
+                subject = "Contact Request"
+                to_email = Email('michaelgarevalo@gmail.com')
+                
+                path = BASE_DIR + '/media/email_templates/contactus_admin.html'
+                temp = open(path, 'r')
+                content = temp.read().replace('[EMAIL]', user.email)
+                content = Content("text/html", content)
+                mail = Mail(from_email, subject, to_email, content)
+                response = sg.client.mail.send.post(request_body=mail.get())
+
+                return Response({"success": 15})
+            else:
+                return Response({"error": 8})
+    return Response({"error": 16})
 
 
 @api_view(["POST"])
@@ -453,21 +524,33 @@ Change user email
         "error": <status_code>
     }
     """
-    if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                token = get_object_or_404(Token, key=request.data["token"])
-                user = get_object_or_404(User, pk=token.user_id)
-                if User.objects.filter(email=request.data["email"]).exists():
-                    return Response({"error": 7})
-                else:
-                    user.email = request.data["email"]
-                    user.save()
-                    serializer = UserSerializer(user)
-                    return Response({"success": 20,
-                                     "user": serializer.data})
+    if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
+        if Token.objects.filter(key=request.data["token"]).exists():
+            token = get_object_or_404(Token, key=request.data["token"])
+            user = get_object_or_404(User, pk=token.user_id)
+            if User.objects.filter(email=request.data["email"]).exists():
+                return Response({"error": 7})
             else:
-                return Response({"error": 17})
+                user.email = request.data["email"]
+                user.save()
+
+                # send success email    
+                from_email = Email("test@example.com")
+                subject = "Reach Email Chage"
+                to_email = Email(user.email)
+
+                path = BASE_DIR + '/media/email_templates/new_email.html'
+                temp = open(path, 'r')
+                content = temp.read().replace('[USER]', user.first_name)
+                content = Content("text/html", content)
+                mail = Mail(from_email, subject, to_email, content)
+                response = sg.client.mail.send.post(request_body=mail.get())
+
+                serializer = UserSerializer(user)
+                return Response({"success": 20,
+                                 "user": serializer.data})
+        else:
+            return Response({"error": 17})
 
 
 @api_view(["POST"])
@@ -2249,6 +2332,7 @@ def update_locate(request):
         {
             "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
             "country_name": "United States",
+            "state_name": "Kensington",
             "city_name": "New York",
             "latitude": 0.0,
             "longitude": 0.0
@@ -2280,6 +2364,24 @@ def update_locate(request):
                 user_profile.longitude = request.data["longitude"]
                 user_profile.location = Point(x=request.data["latitude"], 
                     y=request.data["longitude"], z=0, srid=4326)
+
+                if user_profile.rate == -1:
+                    # first call after registration
+                    user_profile.rate = 0
+
+                    client.lists.members.create('81f38aba85', {
+                        'email_address': user.email,
+                        'status': 'subscribed', #subscribed unsubscribed cleaned pending
+                        'merge_fields': {
+                            'FNAME': user.first_name,
+                            'LNAME': user.last_name,
+                            # 'BIRTHDAY': user_profile.birthday,
+                            'CITY': user_profile.city_name, 
+                            'STATE': user_profile.state_name,
+                            'COUNTRY': user_profile.country_name
+                        },
+                    })
+
                 user_profile.save()
                 serializer = UserSerializer(user)
                 return Response({"success": 61})

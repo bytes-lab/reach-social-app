@@ -21,7 +21,7 @@ from users.views import registration, login, forgot_password, get_user_by_id, st
     get_contact_request, delete_contact_request, accept_contact_request, get_contacts, uget_user_by_token, \
     get_password_by_ID, \
     send_notification, task_notification, delete_chat_notification, get_notification_badge, delete_notifications, \
-    client_token, create_purchase, get_contact_accept_notification, unfriend_task
+    client_token, create_purchase, get_contact_accept_notification, unfriend_task, contactus
 
 admin.site.site_header = 'Reach Admin'
 
@@ -37,6 +37,7 @@ urlpatterns = [
     url(r'^api/v1/locate/create-new-group/$', create_group),
     # get user(s)
     url(r'^api/v1/user/get-user-by-id/$', get_user_by_id),
+    url(r'^api/v1/user/contact-us/$', contactus),
     url(r'^api/v1/user/get-user-by-token/$', get_user_by_token),
     url(r'^api/v1/user/get-user-profile-by-id/$', get_user_profile_by_id),
     url(r'^api/v1/user/get-user-profile-by-token/$', get_user_profile_by_token),
