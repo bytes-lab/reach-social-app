@@ -50,8 +50,8 @@ def broadcast_notification(request):
                 device_token = nf.device_token.replace('-', '')
                 apns.gateway_server.send_notification(device_token, payload)
             except:
-                # raise
                 print device_token, '######'
+
     return render(request, 'send_push.html')
 
 

@@ -6,3 +6,4 @@ media/
 venv/
 migrations
 iphone_ck_prod.pem
+config.py

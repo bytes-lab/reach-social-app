@@ -18,6 +18,7 @@ from reach.settings import APNS_CERF_PATH, APNS_CERF_SANDBOX_MODE, FEED_PAGE_OFF
 
 from utils import send_email
 
+import os
 import re
 import json
 import urllib2
@@ -34,12 +35,15 @@ from mailchimp3 import MailChimp
 
 from django.contrib.gis.geos import *
 from django.contrib.gis.measure import D
+from .config import *
 
 braintree.Configuration.configure(braintree.Environment.Sandbox,
                                   merchant_id="k5n223gdbkt49kc6",
                                   public_key="6kjkyb6gknjbk6k9",
                                   private_key="2cef56043deef9273ba5fe21be10251a")
 
+client = MailChimp(MAILCHIMP_USER, MAILCHIMP_API_KEY)
+sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
 
 @api_view(["POST"])
 def registration(request):
