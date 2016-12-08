@@ -605,6 +605,7 @@ Change user password.
             if Token.objects.filter(key=request.data["token"]).exists():
                 token = get_object_or_404(Token, key=request.data["token"])
                 user = get_object_or_404(User, pk=token.user_id)
+
                 auth_user = authenticate(username=user.username, password=request.data['old_password'])
                 if auth_user is not None:
                     if "new_password" in request.data and request.data["new_password"] != "" \
@@ -2375,7 +2376,7 @@ def update_locate(request):
                         'merge_fields': {
                             'FNAME': user.first_name,
                             'LNAME': user.last_name,
-                            # 'BIRTHDAY': user_profile.birthday,
+                            'BIRTHDAY': datetime.datetime.strftime(user_profile.birthday, '%m/%d/%Y'),
                             'CITY': user_profile.city_name, 
                             'STATE': user_profile.state_name,
                             'COUNTRY': user_profile.country_name

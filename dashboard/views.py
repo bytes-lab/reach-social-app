@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
 from users.models import UserNotification
-from reach.settings import APNS_CERF_PATH, APNS_CERF_SANDBOX_MODE
+from reach.settings import APNS_CERF_PATH, APNS_CERF_SANDBOX_MODE, BASE_DIR
 from apns import APNs, Payload
 
 
@@ -50,6 +50,7 @@ def broadcast_notification(request):
                 device_token = nf.device_token.replace('-', '')
                 apns.gateway_server.send_notification(device_token, payload)
             except:
+                # raise
                 print device_token, '######'
     return render(request, 'send_push.html')
 
