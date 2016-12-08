@@ -3,7 +3,6 @@
 .idea/
 .DS_Store/
 media/
-!media/email_templates
 venv/
 migrations
 iphone_ck_prod.pem

@@ -161,7 +161,7 @@ def registration(request):
     subject = "Welcome to Reach Anonymous"
     to_email = Email(user.email)
 
-    path = BASE_DIR + '/media/email_templates/signup.html'
+    path = BASE_DIR + '/static/email_templates/signup.html'
     temp = open(path, 'r')
     content = temp.read().replace('[USERNAME]', user.first_name)
     content = Content("text/html", content)
@@ -311,7 +311,7 @@ User recover password method.
                     subject = "Reset Password"
                     to_email = Email(email)
                     
-                    path = BASE_DIR + '/media/email_templates/new_password.html'
+                    path = BASE_DIR + '/static/email_templates/new_password.html'
                     temp = open(path, 'r')
                     content = temp.read().replace('[USERNAME]', email).replace('[PASSWORD]', new_password)
                     content = Content("text/html", content)
@@ -338,7 +338,7 @@ def contactus(request):
                 subject = "Contact Accepted"
                 to_email = Email(email)
                 
-                path = BASE_DIR + '/media/email_templates/contactus_user.html'
+                path = BASE_DIR + '/static/email_templates/contactus_user.html'
                 temp = open(path, 'r')
                 content = temp.read().replace('[USERNAME]', user.first_name)
                 content = Content("text/html", content)
@@ -350,7 +350,7 @@ def contactus(request):
                 subject = "Contact Request"
                 to_email = Email('michaelgarevalo@gmail.com')
                 
-                path = BASE_DIR + '/media/email_templates/contactus_admin.html'
+                path = BASE_DIR + '/static/email_templates/contactus_admin.html'
                 temp = open(path, 'r')
                 content = temp.read().replace('[EMAIL]', user.email)
                 content = Content("text/html", content)
@@ -539,7 +539,7 @@ Change user email
                 subject = "Reach Email Chage"
                 to_email = Email(user.email)
 
-                path = BASE_DIR + '/media/email_templates/new_email.html'
+                path = BASE_DIR + '/static/email_templates/new_email.html'
                 temp = open(path, 'r')
                 content = temp.read().replace('[USER]', user.first_name)
                 content = Content("text/html", content)
