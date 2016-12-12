@@ -159,7 +159,7 @@ def registration(request):
     user.save()
 
     # send registration email    
-    from_email = Email("test@example.com")
+    from_email = Email("info@reachanonymous.com")
     subject = "Welcome to Reach Anonymous"
     to_email = Email(user.email)
 
@@ -309,13 +309,13 @@ User recover password method.
                     # user.email_user('Reach. Your new password!', message)
 
                     # send registration email    
-                    from_email = Email("test@example.com")
+                    from_email = Email("info@reachanonymous.com")
                     subject = "Reset Password"
                     to_email = Email(email)
                     
                     path = BASE_DIR + '/static/email_templates/new_password.html'
                     temp = open(path, 'r')
-                    content = temp.read().replace('[USERNAME]', email).replace('[PASSWORD]', new_password)
+                    content = temp.read().replace('[USERNAME]', user.first_name).replace('[PASSWORD]', new_password)
                     content = Content("text/html", content)
                     mail = Mail(from_email, subject, to_email, content)
                     response = sg.client.mail.send.post(request_body=mail.get())
@@ -336,7 +336,7 @@ def contactus(request):
                 user = get_object_or_404(User, email=email)
                 
                 # send contact accepted email to user
-                from_email = Email("test@example.com")
+                from_email = Email("info@reachanonymous.com")
                 subject = "Contact Accepted"
                 to_email = Email(email)
                 
@@ -348,7 +348,10 @@ def contactus(request):
                 response = sg.client.mail.send.post(request_body=mail.get())
 
                 # send contact accepted email to admin
-                from_email = Email("test@example.com")
+                # TODO
+                # fullname, content
+                
+                from_email = Email("info@reachanonymous.com")
                 subject = "Contact Request"
                 to_email = Email('michaelgarevalo@gmail.com')
                 
@@ -537,7 +540,7 @@ Change user email
                 user.save()
 
                 # send success email    
-                from_email = Email("test@example.com")
+                from_email = Email("info@reachanonymous.com")
                 subject = "Reach Email Chage"
                 to_email = Email(user.email)
 

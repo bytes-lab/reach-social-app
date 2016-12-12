@@ -48,7 +48,6 @@ def broadcast_notification(request):
         for nf in UserNotification.objects.filter(user_id__in=user_ids):
             try:
                 device_token = nf.device_token.replace('-', '')
-                print device_token, '@@@@@@'
                 apns.gateway_server.send_notification(device_token, payload)
             except:
                 print device_token, '######'
