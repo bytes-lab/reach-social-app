@@ -159,7 +159,7 @@ def registration(request):
     user.save()
 
     # send registration email    
-    from_email = Email("info@reachanonymous.com")
+    from_email = Email("info@reachanonymous.com", "ReachAnonymous")
     subject = "Welcome to Reach Anonymous"
     to_email = Email(user.email)
 
@@ -309,7 +309,7 @@ User recover password method.
                     # user.email_user('Reach. Your new password!', message)
 
                     # send registration email    
-                    from_email = Email("info@reachanonymous.com")
+                    from_email = Email("info@reachanonymous.com", "ReachAnonymous")
                     subject = "Reset Password"
                     to_email = Email(email)
                     
@@ -336,7 +336,7 @@ def contactus(request):
                 user = get_object_or_404(User, email=email)
                 
                 # send contact accepted email to user
-                from_email = Email("info@reachanonymous.com")
+                from_email = Email("info@reachanonymous.com", "ReachAnonymous")
                 subject = "Contact Accepted"
                 to_email = Email(email)
                 
@@ -351,7 +351,7 @@ def contactus(request):
                 # TODO
                 # fullname, content
                 
-                from_email = Email("info@reachanonymous.com")
+                from_email = Email("info@reachanonymous.com", "ReachAnonymous")
                 subject = "Contact Request"
                 to_email = Email('michaelgarevalo@gmail.com')
                 
@@ -540,7 +540,7 @@ Change user email
                 user.save()
 
                 # send success email    
-                from_email = Email("info@reachanonymous.com")
+                from_email = Email("info@reachanonymous.com", "ReachAnonymous")
                 subject = "Reach Email Chage"
                 to_email = Email(user.email)
 
@@ -2375,7 +2375,7 @@ def update_locate(request):
                     # first call after registration
                     user_profile.rate = 0
 
-                    client.lists.members.create('81f38aba85', {
+                    client.lists.members.create(MAILCHIMP_LIST, {
                         'email_address': user.email,
                         'status': 'subscribed', #subscribed unsubscribed cleaned pending
                         'merge_fields': {
