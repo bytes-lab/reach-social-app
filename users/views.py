@@ -2539,7 +2539,8 @@ def delete_contact_request(request):
         if Token.objects.filter(key=token).exists():
             token = get_object_or_404(Token, key=token)
             ContactReq.objects.filter(user_id=user_id, otheruser_id=other_userid).delete()
-
+            ContactReq.objects.filter(otheruser_id=user_id, user_id=other_userid).delete()
+            
             contactRequest=ContactReq.objects.filter(otheruser_id=token.user_id)
             serializer = ContactReqSerializer(contactRequest, many=True)
             return Response({"success": 20,
