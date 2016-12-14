@@ -2499,53 +2499,53 @@ def contact_request(request):
 @api_view(["POST"])
 def get_contact_request(request):
     """
-Get user by token method.
+    Get user by token method.
 
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df"
-    }
-
-
+        Example json:
+        {
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df"
+        }
     """
     if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                token = get_object_or_404(Token, key=request.data["token"])
-                contactRequest=ContactReq.objects.filter(otheruser_id=token.user_id)
+        token = request.data.get('token')
+        if Token.objects.filter(key=token).exists():
+            token = get_object_or_404(Token, key=token)
+            contactRequest=ContactReq.objects.filter(otheruser_id=token.user_id)
 
-                serializer = ContactReqSerializer(contactRequest, many=True)
-                return Response({"success": 20,
-                                 "request": serializer.data})
-            else:
-                return Response({"error": 17})
+            serializer = ContactReqSerializer(contactRequest, many=True)
+            return Response({"success": 20,
+                             "request": serializer.data})
+        else:
+            return Response({"error": 17})
 
 
 @api_view(["POST"])
 def delete_contact_request(request):
     """
-Get user by token method.
+    Get user by token method.
 
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
-	"contactreq_id" : 5
-    }
-
-
+        Example json:
+        {
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
+            "user_id" : , 
+            "other_userid" :
+        }
     """
     if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                token = get_object_or_404(Token, key=request.data["token"])
-                ContactReq.objects.filter(pk=request.data["contactreq_id"]).delete()
-		
-                contactRequest=ContactReq.objects.filter(otheruser_id=token.user_id)
-		serializer = ContactReqSerializer(contactRequest, many=True)
-                return Response({"success": 20,
-                                 "request": serializer.data})
-            else:
-                return Response({"error": 17})
+        token = request.data.get('token')
+        user_id = request.data.get('user_id')
+        other_userid = request.data.get('other_userid')
+
+        if Token.objects.filter(key=token).exists():
+            token = get_object_or_404(Token, key=token)
+            ContactReq.objects.filter(user_id=user_id, otheruser_id=other_userid).delete()
+
+            contactRequest=ContactReq.objects.filter(otheruser_id=token.user_id)
+            serializer = ContactReqSerializer(contactRequest, many=True)
+            return Response({"success": 20,
+                             "request": serializer.data})
+        else:
+            return Response({"error": 17})
 
 
 @api_view(["POST"])
