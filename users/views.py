@@ -2510,7 +2510,7 @@ def get_contact_request(request):
         token = request.data.get('token')
         if Token.objects.filter(key=token).exists():
             token = get_object_or_404(Token, key=token)
-            contactRequest=ContactReq.objects.filter(otheruser_id=token.user_id)
+            contactRequest=ContactReq.objects.filter(Q(otheruser_id=token.user_id)|Q(user_id=token.user_id))
 
             serializer = ContactReqSerializer(contactRequest, many=True)
             return Response({"success": 20,
