@@ -1,3 +1,11 @@
+import os
+import re
+import json
+import codecs
+import urllib2
+import datetime
+from base64 import b64decode
+
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
@@ -15,15 +23,8 @@ from users.serializers import UserSerializer, UserReportSerializer, UserFeedSeri
 from circles.serializers import CircleSerializer
 
 from reach.settings import APNS_CERF_PATH, APNS_CERF_SANDBOX_MODE, FEED_PAGE_OFFSET, BASE_DIR
-
 from utils import send_email
 
-import os
-import re
-import json
-import urllib2
-import datetime
-from base64 import b64decode
 
 import sendgrid
 from sendgrid.helpers.mail import *
@@ -164,7 +165,7 @@ def registration(request):
     to_email = Email(user.email)
 
     path = BASE_DIR + '/static/email_templates/signup.html'
-    temp = open(path, 'r')
+    temp = codecs.open(path, encoding='utf-8')
     content = temp.read().replace('[USERNAME]', user.first_name)
     content = Content("text/html", content)
     mail = Mail(from_email, subject, to_email, content)
@@ -310,11 +311,11 @@ User recover password method.
 
                     # send registration email    
                     from_email = Email("info@reachanonymous.com", "Reach Anonymous")
-                    subject = "Reset Password"
+                    subject = "New Password"
                     to_email = Email(email)
                     
                     path = BASE_DIR + '/static/email_templates/new_password.html'
-                    temp = open(path, 'r')
+                    temp = codecs.open(path, encoding='utf-8')
                     content = temp.read().replace('[USERNAME]', user.first_name).replace('[PASSWORD]', new_password)
                     content = Content("text/html", content)
                     mail = Mail(from_email, subject, to_email, content)
@@ -337,11 +338,11 @@ def contactus(request):
                 
                 # send contact accepted email to user
                 from_email = Email("info@reachanonymous.com", "Reach Anonymous")
-                subject = "Contact Accepted"
+                subject = "Contact us"
                 to_email = Email(email)
                 
                 path = BASE_DIR + '/static/email_templates/contactus_user.html'
-                temp = open(path, 'r')
+                temp = codecs.open(path, encoding='utf-8')
                 content = temp.read().replace('[USERNAME]', user.first_name)
                 content = Content("text/html", content)
                 mail = Mail(from_email, subject, to_email, content)
