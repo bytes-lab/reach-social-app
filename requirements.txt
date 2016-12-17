@@ -8,3 +8,5 @@ Markdown==2.6.4
 requests==2.12.1
 mailchimp3
 sendgrid
+boto
+django-storages

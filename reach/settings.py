@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from users.config import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # print BASE_DIR, '@@@@@@2'
@@ -45,6 +46,7 @@ INSTALLED_APPS = (
     # rest API
     'rest_framework',
     'rest_framework.authtoken',
+    'storages'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -107,6 +109,12 @@ EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+
+MEDIAFILES_LOCATION = 'media'
+MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
+DEFAULT_FILE_STORAGE = 'utils.MediaRootS3BotoStorage'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = '/media/'
