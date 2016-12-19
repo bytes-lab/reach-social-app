@@ -17,8 +17,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ("full_name", "biography", "like_count", "comment_count", "rate", "avatar", "is_facebook",
-                  "is_twitter", "is_instagram", "facebook_url", "twitter_url", "instagram_url", "country_name", "city_name", "latitude", "longitude","qbchat_id")
+        fields = ("full_name", "biography", "like_count", "comment_count", 
+                  "rate", "avatar", "is_facebook", "is_twitter", "is_instagram", 
+                  "facebook_url", "twitter_url", "instagram_url", "country_name", 
+                  "city_name", "latitude", "longitude","qbchat_id", "state_name")
 
 
 class UserSerializer(serializers.ModelSerializer):

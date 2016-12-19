@@ -617,18 +617,18 @@ Get user all posts method.
     }
     """
     if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                token = get_object_or_404(Token, key=request.data["token"])
-                start_offset = request.data["offset"]
-                end_offset = start_offset + PAGE_OFFSET
-                posts = Post.objects.all().order_by("-date")[start_offset:end_offset]
-                serializer = PostSerializer(posts, many=True, context={'user_id': token.user_id})
-                return Response({"success": 29,
-                                 "post": serializer.data,
-                                 "offset": end_offset})
-            else:
-                return Response({"error": 17})
+        token = request.data.get('token')
+        if Token.objects.filter(key=token).exists():
+            token = get_object_or_404(Token, key=token)
+            start_offset = request.data["offset"]
+            end_offset = start_offset + PAGE_OFFSET
+            posts = Post.objects.all().order_by("-date")[start_offset:end_offset]
+            serializer = PostSerializer(posts, many=True, context={'user_id': token.user_id})
+            return Response({"success": 29,
+                             "post": serializer.data,
+                             "offset": end_offset})
+        else:
+            return Response({"error": 17})
 
 
 @api_view(["POST"])
