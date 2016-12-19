@@ -17,7 +17,7 @@ class UserProfile(models.Model):
     rate = models.PositiveIntegerField(default=0)
     count_rates = models.PositiveIntegerField(default=0)
     avatar = models.FileField(upload_to=get_file_path, 
-        default="https://s3.amazonaws.com/reachmobileapp/media/default_images/default.png")
+        default="default_images/default.png")
     is_facebook = models.BooleanField(default=False)
     is_twitter = models.BooleanField(default=False)
     is_instagram = models.BooleanField(default=False)
