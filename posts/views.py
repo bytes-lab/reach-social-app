@@ -385,244 +385,252 @@ Add new comment method.
 @api_view(["POST"])
 def get_user_posts(request):
     """
-Get user all posts method.
+    Get newer or older posts than the post.
 
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
-        "offset": 0
-    }
+        Example json:
+        {
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
+            "post_id": 0,
+            "type": "new" or "old"
+        }
 
-    Code statuses can be found here: /api/v1/docs/status-code/
+        Code statuses can be found here: /api/v1/docs/status-code/
 
-    Success json:
-    {
-        "post": [
-            {
-                "id": 1,
-                author": {
-                    "id": 2,
-                    "username": "antonboksha",
-                    "first_name": "",
-                    "last_name": "",
-                    "email": "antonboksha@gmail.com",
-                    "info": {
-                        "full_name": "",
-                        "biography": "qweqweqwe",
-                        "like_count": 0,
-                        "comment_count": 0,
-                        "rate": 10,
-                        "avatar": "/media/userprofile/849d5d9c-e968-4c7c-b96c-23aa46a719fd.png",
-                        "is_facebook": false,
-                        "is_twitter": false,
-                        "is_instagram": false
+        Success json:
+        {
+            "post": [
+                {
+                    "id": 1,
+                    author": {
+                        "id": 2,
+                        "username": "antonboksha",
+                        "first_name": "",
+                        "last_name": "",
+                        "email": "antonboksha@gmail.com",
+                        "info": {
+                            "full_name": "",
+                            "biography": "qweqweqwe",
+                            "like_count": 0,
+                            "comment_count": 0,
+                            "rate": 10,
+                            "avatar": "/media/userprofile/849d5d9c-e968-4c7c-b96c-23aa46a719fd.png",
+                            "is_facebook": false,
+                            "is_twitter": false,
+                            "is_instagram": false
+                        },
+                        "count_downvoted": 1,
+                        "count_upvoted": 1,
+                        "count_likes": 1,
+                        "count_comments": 2,
+                        "complete_likes": 50
                     },
-                    "count_downvoted": 1,
-                    "count_upvoted": 1,
-                    "count_likes": 1,
-                    "count_comments": 2,
-                    "complete_likes": 50
+                    "text": "Some post text here...",
+                    "like_count": 0,
+                    "comment_count": 0,
+                    "date": "2015-11-23T16:19:47.570547Z",
+                    "permission": true,
+                    "image": "/media/post/4a62f3f2-e4e2-4085-982d-cdb57c0f7ca3.png",
+                    "post_hashtags": [
+                        {
+                            "id": 1,
+                            "hashtag": "first"
+                        },
+                        {
+                            "id": 2,
+                            "hashtag": "second"
+                        },
+                        {
+                            "id": 3,
+                            "hashtag": "third"
+                        }
+                    ],
+                    "post_comments": [
+                        {
+                            "id": 1,
+                            "text": "Some post text here...",
+                            "author": {
+                                "id": 2,
+                                "username": "antonboksha",
+                                "first_name": "",
+                                "last_name": "",
+                                "email": "antonboksha@gmail.com",
+                                "info": {
+                                    "full_name": "",
+                                    "biography": "",
+                                    "like_count": 0,
+                                    "comment_count": 0,
+                                    "rate": 0,
+                                    "avatar": "/media/default_images/default.png",
+                                    "is_facebook": false,
+                                    "is_twitter": false,
+                                    "is_instagram": false
+                                },
+                                "count_downvoted": 1,
+                                "count_upvoted": 1,
+                                "count_likes": 1,
+                                "count_comments": 1,
+                                "complete_likes": 50
+                            },
+                            "date": "2015-11-23T16:21:24.335014Z",
+                            "permission": true,
+                            "rate": 0,
+                            "is_upvoted": false,
+                            "is_downvoted": false,
+                            "best_response": false
+                        },
+                        {
+                            "id": 2,
+                            "text": "Some post text here...",
+                            "author": {
+                                "id": 2,
+                                "username": "antonboksha",
+                                "first_name": "",
+                                "last_name": "",
+                                "email": "antonboksha@gmail.com",
+                                "info": {
+                                    "full_name": "",
+                                    "biography": "",
+                                    "like_count": 0,
+                                    "comment_count": 0,
+                                    "rate": 0,
+                                    "avatar": "/media/default_images/default.png",
+                                    "is_facebook": false,
+                                    "is_twitter": false,
+                                    "is_instagram": false
+                                },
+                                "count_downvoted": 1,
+                                "count_upvoted": 1,
+                                "count_likes": 1,
+                                "count_comments": 1,
+                                "complete_likes": 50
+                            },
+                            "date": "2015-11-23T16:23:42.295629Z",
+                            "permission": true,
+                            "rate": 0,
+                            "is_upvoted": false,
+                            "is_downvoted": false,
+                            "best_response": false
+                        },
+                        {
+                            "id": 3,
+                            "text": "Some post text here...",
+                            "author": {
+                                "id": 2,
+                                "username": "antonboksha",
+                                "first_name": "",
+                                "last_name": "",
+                                "email": "antonboksha@gmail.com",
+                                "info": {
+                                    "full_name": "",
+                                    "biography": "",
+                                    "like_count": 0,
+                                    "comment_count": 0,
+                                    "rate": 0,
+                                    "avatar": "/media/default_images/default.png",
+                                    "is_facebook": false,
+                                    "is_twitter": false,
+                                    "is_instagram": false
+                                },
+                                "count_downvoted": 1,
+                                "count_upvoted": 1,
+                                "count_likes": 1,
+                                "count_comments": 1,
+                                "complete_likes": 50
+                            },
+                            "date": "2015-11-23T16:24:03.634480Z",
+                            "permission": true,
+                            "rate": 0,
+                            "is_upvoted": false,
+                            "is_downvoted": false,
+                            "best_response": false
+                        },
+                        {
+                            "id": 4,
+                            "text": "Some post text here...",
+                            "author": {
+                                "id": 2,
+                                "username": "antonboksha",
+                                "first_name": "",
+                                "last_name": "",
+                                "email": "antonboksha@gmail.com",
+                                "info": {
+                                    "full_name": "",
+                                    "biography": "",
+                                    "like_count": 0,
+                                    "comment_count": 0,
+                                    "rate": 0,
+                                    "avatar": "/media/default_images/default.png",
+                                    "is_facebook": false,
+                                    "is_twitter": false,
+                                    "is_instagram": false
+                                },
+                                "count_downvoted": 1,
+                                "count_upvoted": 1,
+                                "count_likes": 1,
+                                "count_comments": 1,
+                                "complete_likes": 50
+                            },
+                            "date": "2015-11-23T16:24:05.060450Z",
+                            "permission": true,
+                            "rate": 0,
+                            "is_upvoted": false,
+                            "is_downvoted": false,
+                            "best_response": false
+                        }
+                    ],
+                    "like_count": 0,
+                    "comment_count": 0
                 },
-                "text": "Some post text here...",
-                "like_count": 0,
-                "comment_count": 0,
-                "date": "2015-11-23T16:19:47.570547Z",
-                "permission": true,
-                "image": "/media/post/4a62f3f2-e4e2-4085-982d-cdb57c0f7ca3.png",
-                "post_hashtags": [
-                    {
-                        "id": 1,
-                        "hashtag": "first"
-                    },
-                    {
-                        "id": 2,
-                        "hashtag": "second"
-                    },
-                    {
-                        "id": 3,
-                        "hashtag": "third"
-                    }
-                ],
-                "post_comments": [
-                    {
-                        "id": 1,
-                        "text": "Some post text here...",
-                        "author": {
-                            "id": 2,
-                            "username": "antonboksha",
-                            "first_name": "",
-                            "last_name": "",
-                            "email": "antonboksha@gmail.com",
-                            "info": {
-                                "full_name": "",
-                                "biography": "",
-                                "like_count": 0,
-                                "comment_count": 0,
-                                "rate": 0,
-                                "avatar": "/media/default_images/default.png",
-                                "is_facebook": false,
-                                "is_twitter": false,
-                                "is_instagram": false
-                            },
-                            "count_downvoted": 1,
-                            "count_upvoted": 1,
-                            "count_likes": 1,
-                            "count_comments": 1,
-                            "complete_likes": 50
+                {
+                    "id": 2,
+                    "text": "Some post text here...",
+                    "like_count": 0,
+                    "comment_count": 0,
+                    "date": "2015-11-23T16:40:39.438305Z",
+                    "permission": true,
+                    "image": "/media/post/5f7f8233-7704-4634-b366-6082c3cfbabe.png",
+                    "post_hashtags": [
+                        {
+                            "id": 4,
+                            "hashtag": "first"
                         },
-                        "date": "2015-11-23T16:21:24.335014Z",
-                        "permission": true,
-                        "rate": 0,
-                        "is_upvoted": false,
-                        "is_downvoted": false,
-                        "best_response": false
-                    },
-                    {
-                        "id": 2,
-                        "text": "Some post text here...",
-                        "author": {
-                            "id": 2,
-                            "username": "antonboksha",
-                            "first_name": "",
-                            "last_name": "",
-                            "email": "antonboksha@gmail.com",
-                            "info": {
-                                "full_name": "",
-                                "biography": "",
-                                "like_count": 0,
-                                "comment_count": 0,
-                                "rate": 0,
-                                "avatar": "/media/default_images/default.png",
-                                "is_facebook": false,
-                                "is_twitter": false,
-                                "is_instagram": false
-                            },
-                            "count_downvoted": 1,
-                            "count_upvoted": 1,
-                            "count_likes": 1,
-                            "count_comments": 1,
-                            "complete_likes": 50
+                        {
+                            "id": 5,
+                            "hashtag": "second"
                         },
-                        "date": "2015-11-23T16:23:42.295629Z",
-                        "permission": true,
-                        "rate": 0,
-                        "is_upvoted": false,
-                        "is_downvoted": false,
-                        "best_response": false
-                    },
-                    {
-                        "id": 3,
-                        "text": "Some post text here...",
-                        "author": {
-                            "id": 2,
-                            "username": "antonboksha",
-                            "first_name": "",
-                            "last_name": "",
-                            "email": "antonboksha@gmail.com",
-                            "info": {
-                                "full_name": "",
-                                "biography": "",
-                                "like_count": 0,
-                                "comment_count": 0,
-                                "rate": 0,
-                                "avatar": "/media/default_images/default.png",
-                                "is_facebook": false,
-                                "is_twitter": false,
-                                "is_instagram": false
-                            },
-                            "count_downvoted": 1,
-                            "count_upvoted": 1,
-                            "count_likes": 1,
-                            "count_comments": 1,
-                            "complete_likes": 50
-                        },
-                        "date": "2015-11-23T16:24:03.634480Z",
-                        "permission": true,
-                        "rate": 0,
-                        "is_upvoted": false,
-                        "is_downvoted": false,
-                        "best_response": false
-                    },
-                    {
-                        "id": 4,
-                        "text": "Some post text here...",
-                        "author": {
-                            "id": 2,
-                            "username": "antonboksha",
-                            "first_name": "",
-                            "last_name": "",
-                            "email": "antonboksha@gmail.com",
-                            "info": {
-                                "full_name": "",
-                                "biography": "",
-                                "like_count": 0,
-                                "comment_count": 0,
-                                "rate": 0,
-                                "avatar": "/media/default_images/default.png",
-                                "is_facebook": false,
-                                "is_twitter": false,
-                                "is_instagram": false
-                            },
-                            "count_downvoted": 1,
-                            "count_upvoted": 1,
-                            "count_likes": 1,
-                            "count_comments": 1,
-                            "complete_likes": 50
-                        },
-                        "date": "2015-11-23T16:24:05.060450Z",
-                        "permission": true,
-                        "rate": 0,
-                        "is_upvoted": false,
-                        "is_downvoted": false,
-                        "best_response": false
-                    }
-                ],
-                "like_count": 0,
-                "comment_count": 0
-            },
-            {
-                "id": 2,
-                "text": "Some post text here...",
-                "like_count": 0,
-                "comment_count": 0,
-                "date": "2015-11-23T16:40:39.438305Z",
-                "permission": true,
-                "image": "/media/post/5f7f8233-7704-4634-b366-6082c3cfbabe.png",
-                "post_hashtags": [
-                    {
-                        "id": 4,
-                        "hashtag": "first"
-                    },
-                    {
-                        "id": 5,
-                        "hashtag": "second"
-                    },
-                    {
-                        "id": 6,
-                        "hashtag": "third"
-                    }
-                ],
-                "post_comments": [],
-                "like_count": 0,
-                "comment_count": 0
-            }
-        ],
-        "success": 29,
-        "offset": 10
-    }
+                        {
+                            "id": 6,
+                            "hashtag": "third"
+                        }
+                    ],
+                    "post_comments": [],
+                    "like_count": 0,
+                    "comment_count": 0
+                }
+            ],
+            "success": 29,
+            "offset": 10
+        }
 
-    Fail json:
-    {
-        "error": <status_code>
-    }
+        Fail json:
+        {
+            "error": <status_code>
+        }
     """
     if request.method == "POST":
         token = request.data.get('token')
+        post_id = request.data.get('post_id')
+        type_ = request.data.get('type')
+
         if Token.objects.filter(key=token).exists():
             token = get_object_or_404(Token, key=token)
-            start_offset = request.data["offset"]
-            end_offset = start_offset + PAGE_OFFSET
-            posts = Post.objects.all().order_by("-date")[start_offset:end_offset]
+            if post_id == "-1":
+                posts = Post.objects.all().order_by("-date")[:PAGE_OFFSET]
+            elif type_ == 'old':
+                posts = Post.objects.filter(pk__lt=post_id).order_by("-date")[:PAGE_OFFSET]
+            else: # 'new'
+                posts = reversed(Post.objects.filter(pk__gt=post_id).order_by("date")[:PAGE_OFFSET])
+
             serializer = PostSerializer(posts, many=True, context={'user_id': token.user_id})
             return Response({"success": 29,
                              "post": serializer.data,
@@ -1921,7 +1929,8 @@ Search posts by hashtag.
     {
         "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
         "hashtag": "test",
-        "offset": 0
+        "post_id": 0,
+        "type": "new" or "old"
     }
 
     Success json:
@@ -2070,20 +2079,30 @@ Search posts by hashtag.
     }
     """
     if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                token = get_object_or_404(Token, key=request.data["token"])
-                posts_ids = PostHashtag.objects.filter(hashtag__contains=request.data["hashtag"]). \
-                    values_list("post_id", flat=True)
-                start_offset = request.data["offset"]
-                end_offset = start_offset + PAGE_OFFSET
-                posts = Post.objects.filter(pk__in=posts_ids)[start_offset:end_offset]
-                serializer = PostSerializer(posts, context={'user_id': token.user_id}, many=True)
-                return Response({"success": 66,
-                                 "posts": serializer.data,
-                                 "offset": end_offset})
-            else:
-                return Response({"error": 17})
+        token = request.data.get('token')
+        post_id = request.data.get('post_id')
+        type_ = request.data.get('type')
+        hashtag = request.data.get('hashtag')
+
+        if Token.objects.filter(key=token).exists():
+            token = get_object_or_404(Token, key=token)
+            posts_ids = PostHashtag.objects.filter(hashtag__contains=hashtag). \
+                values_list("post_id", flat=True)
+
+            if post_id == "-1":
+                posts = Post.objects.filter(pk__in=posts_ids).order_by("-date")[:PAGE_OFFSET]
+            elif type_ == 'old':
+                posts = Post.objects.filter(pk__in=posts_ids, pk__lt=post_id).order_by("-date")[:PAGE_OFFSET]
+            else: # 'new'
+                posts = reversed(Post.objects.filter(pk__in=posts_ids, pk__gt=post_id).order_by("date")[:PAGE_OFFSET])
+
+            posts = Post.objects.filter(pk__in=posts_ids)[:PAGE_OFFSET]
+            serializer = PostSerializer(posts, context={'user_id': token.user_id}, many=True)
+            return Response({"success": 66,
+                             "posts": serializer.data,
+                             "offset": end_offset})
+        else:
+            return Response({"error": 17})
 
 
 @api_view(["POST"])
@@ -2095,7 +2114,9 @@ Search explore popular posts.
     {
         "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
         "keyword": "qwerty",
-        "offset": 0
+        "post_id": 0,
+        "radius": 5,
+        "type": "new" or "old"
     }
 
     Success json:
@@ -2244,22 +2265,54 @@ Search explore popular posts.
     }
     """
     if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                token = get_object_or_404(Token, key=request.data["token"])
-                start_offset = request.data["offset"]
-                end_offset = start_offset + PAGE_OFFSET
+        token = request.data.get('token')
+        post_id = request.data.get('post_id')
+        type_ = request.data.get('type')
+        keyword = request.data.get('keyword')
+        radius = int(request.data.get('radius'))
 
-                posts_ids = PostHashtag.objects.filter(hashtag__contains=request.data["keyword"]). \
-                    values_list("post_id", flat=True)
-                posts = Post.objects.filter(Q(text__contains=request.data["keyword"]) | Q(pk__in=posts_ids)). \
-                            order_by("-date")[start_offset:end_offset]
-                serializer = PostSerializer(posts, context={'user_id': token.user_id}, many=True)
-                return Response({"success": 63,
-                                 "posts": serializer.data,
-                                 "offset": end_offset})
-            else:
-                return Response({"error": 17})
+        if Token.objects.filter(key=token).exists():
+            token = get_object_or_404(Token, key=token)
+            up = Userprofile.objects.get(user_id=token.user_id)
+            user_ids = []
+
+            for u_p in Userprofile.objects.exclude(user_id=token.user_id):
+                try:
+                    if radius < 0 or get_straight_distance(up.latitude, up.longitude, u_p.latitude, u_p.longitude) < radius:
+                        user_ids.append(u_p.user_id)
+                except Exception, e:
+                    pass
+
+            posts_ids = PostHashtag.objects.filter(hashtag__contains=keyword). \
+                values_list("post_id", flat=True)
+            posts = Post.objects.filter(Q(text__contains=keyword) | Q(pk__in=posts_ids)).filter(author_id__in=user_ids)
+
+            if post_id == "-1":
+                posts = posts.order_by("-date")[:PAGE_OFFSET]
+            elif type_ == 'old':
+                posts = posts.filter(pk__lt=post_id).order_by("-date")[:PAGE_OFFSET]
+            else: # 'new'
+                posts = reversed(posts.filter(pk__gt=post_id).order_by("date")[:PAGE_OFFSET])
+
+            serializer = PostSerializer(posts, context={'user_id': token.user_id}, many=True)
+            return Response({"success": 63,
+                             "posts": serializer.data,
+                             "offset": end_offset})
+        else:
+            return Response({"error": 17})
+
+
+def get_straight_distance(lat1, lon1, lat2, lon2):
+    '''
+    calculate the distance between two gps positions (latitude, longitude)
+    '''
+    R = 6371  # Radius of the earth in km
+    dLat = math.radians(lat2-lat1)  # deg2rad below
+    dLon = math.radians(lon2-lon1)
+    a = math.sin(dLat/2) * math.sin(dLat/2) + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dLon/2) * math.sin(dLon/2)
+
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    return R * c * 0.621371 # Distance in miles
 
 
 @api_view(["POST"])
@@ -2753,250 +2806,6 @@ Remove post by id.
             else:
                 return Response({"error": 17})
 
-
-@api_view(["POST"])
-def get_user_new_posts(request):
-    """
-Get user all posts method.
-
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
-        "latest_id": 123
-    }
-
-    Code statuses can be found here: /api/v1/docs/status-code/
-
-    Success json:
-    {
-        "post": [
-            {
-                "id": 1,
-                author": {
-                    "id": 2,
-                    "username": "antonboksha",
-                    "first_name": "",
-                    "last_name": "",
-                    "email": "antonboksha@gmail.com",
-                    "info": {
-                        "full_name": "",
-                        "biography": "qweqweqwe",
-                        "like_count": 0,
-                        "comment_count": 0,
-                        "rate": 10,
-                        "avatar": "/media/userprofile/849d5d9c-e968-4c7c-b96c-23aa46a719fd.png",
-                        "is_facebook": false,
-                        "is_twitter": false,
-                        "is_instagram": false
-                    },
-                    "count_downvoted": 1,
-                    "count_upvoted": 1,
-                    "count_likes": 1,
-                    "count_comments": 2,
-                    "complete_likes": 50
-                },
-                "text": "Some post text here...",
-                "like_count": 0,
-                "comment_count": 0,
-                "date": "2015-11-23T16:19:47.570547Z",
-                "permission": true,
-                "image": "/media/post/4a62f3f2-e4e2-4085-982d-cdb57c0f7ca3.png",
-                "post_hashtags": [
-                    {
-                        "id": 1,
-                        "hashtag": "first"
-                    },
-                    {
-                        "id": 2,
-                        "hashtag": "second"
-                    },
-                    {
-                        "id": 3,
-                        "hashtag": "third"
-                    }
-                ],
-                "post_comments": [
-                    {
-                        "id": 1,
-                        "text": "Some post text here...",
-                        "author": {
-                            "id": 2,
-                            "username": "antonboksha",
-                            "first_name": "",
-                            "last_name": "",
-                            "email": "antonboksha@gmail.com",
-                            "info": {
-                                "full_name": "",
-                                "biography": "",
-                                "like_count": 0,
-                                "comment_count": 0,
-                                "rate": 0,
-                                "avatar": "/media/default_images/default.png",
-                                "is_facebook": false,
-                                "is_twitter": false,
-                                "is_instagram": false
-                            },
-                            "count_downvoted": 1,
-                            "count_upvoted": 1,
-                            "count_likes": 1,
-                            "count_comments": 1,
-                            "complete_likes": 50
-                        },
-                        "date": "2015-11-23T16:21:24.335014Z",
-                        "permission": true,
-                        "rate": 0,
-                        "is_upvoted": false,
-                        "is_downvoted": false,
-                        "best_response": false
-                    },
-                    {
-                        "id": 2,
-                        "text": "Some post text here...",
-                        "author": {
-                            "id": 2,
-                            "username": "antonboksha",
-                            "first_name": "",
-                            "last_name": "",
-                            "email": "antonboksha@gmail.com",
-                            "info": {
-                                "full_name": "",
-                                "biography": "",
-                                "like_count": 0,
-                                "comment_count": 0,
-                                "rate": 0,
-                                "avatar": "/media/default_images/default.png",
-                                "is_facebook": false,
-                                "is_twitter": false,
-                                "is_instagram": false
-                            },
-                            "count_downvoted": 1,
-                            "count_upvoted": 1,
-                            "count_likes": 1,
-                            "count_comments": 1,
-                            "complete_likes": 50
-                        },
-                        "date": "2015-11-23T16:23:42.295629Z",
-                        "permission": true,
-                        "rate": 0,
-                        "is_upvoted": false,
-                        "is_downvoted": false,
-                        "best_response": false
-                    },
-                    {
-                        "id": 3,
-                        "text": "Some post text here...",
-                        "author": {
-                            "id": 2,
-                            "username": "antonboksha",
-                            "first_name": "",
-                            "last_name": "",
-                            "email": "antonboksha@gmail.com",
-                            "info": {
-                                "full_name": "",
-                                "biography": "",
-                                "like_count": 0,
-                                "comment_count": 0,
-                                "rate": 0,
-                                "avatar": "/media/default_images/default.png",
-                                "is_facebook": false,
-                                "is_twitter": false,
-                                "is_instagram": false
-                            },
-                            "count_downvoted": 1,
-                            "count_upvoted": 1,
-                            "count_likes": 1,
-                            "count_comments": 1,
-                            "complete_likes": 50
-                        },
-                        "date": "2015-11-23T16:24:03.634480Z",
-                        "permission": true,
-                        "rate": 0,
-                        "is_upvoted": false,
-                        "is_downvoted": false,
-                        "best_response": false
-                    },
-                    {
-                        "id": 4,
-                        "text": "Some post text here...",
-                        "author": {
-                            "id": 2,
-                            "username": "antonboksha",
-                            "first_name": "",
-                            "last_name": "",
-                            "email": "antonboksha@gmail.com",
-                            "info": {
-                                "full_name": "",
-                                "biography": "",
-                                "like_count": 0,
-                                "comment_count": 0,
-                                "rate": 0,
-                                "avatar": "/media/default_images/default.png",
-                                "is_facebook": false,
-                                "is_twitter": false,
-                                "is_instagram": false
-                            },
-                            "count_downvoted": 1,
-                            "count_upvoted": 1,
-                            "count_likes": 1,
-                            "count_comments": 1,
-                            "complete_likes": 50
-                        },
-                        "date": "2015-11-23T16:24:05.060450Z",
-                        "permission": true,
-                        "rate": 0,
-                        "is_upvoted": false,
-                        "is_downvoted": false,
-                        "best_response": false
-                    }
-                ],
-                "like_count": 0,
-                "comment_count": 0
-            },
-            {
-                "id": 2,
-                "text": "Some post text here...",
-                "like_count": 0,
-                "comment_count": 0,
-                "date": "2015-11-23T16:40:39.438305Z",
-                "permission": true,
-                "image": "/media/post/5f7f8233-7704-4634-b366-6082c3cfbabe.png",
-                "post_hashtags": [
-                    {
-                        "id": 4,
-                        "hashtag": "first"
-                    },
-                    {
-                        "id": 5,
-                        "hashtag": "second"
-                    },
-                    {
-                        "id": 6,
-                        "hashtag": "third"
-                    }
-                ],
-                "post_comments": [],
-                "like_count": 0,
-                "comment_count": 0
-            }
-        ],
-        "success": 29,
-    }
-
-    Fail json:
-    {
-        "error": <status_code>
-    }
-    """
-    if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                token = get_object_or_404(Token, key=request.data["token"])
-                posts = Post.objects.filter(pk__gt=request.data["latest_id"]).order_by("-date")[:PAGE_OFFSET]
-                serializer = PostSerializer(posts, many=True, context={'user_id': token.user_id})
-                return Response({"success": 29,
-                                 "post": serializer.data})
-            else:
-                return Response({"error": 17})
 
 
 @api_view(["POST"])

@@ -2483,18 +2483,17 @@ def contact_request(request):
             "other_userid" :
         }
     """
-    if request.method == "POST":
-        token = request.data.get('token')
-        if Token.objects.filter(key=token).exists():
-            token = get_object_or_404(Token, key=token)
-            reqUser = get_object_or_404(User, pk=request.data["user_id"])
-            reqOtherUser = get_object_or_404(User, pk=request.data["other_userid"])
+    token = request.data.get('token')
+    if Token.objects.filter(key=token).exists():
+        token = get_object_or_404(Token, key=token)
+        reqUser = get_object_or_404(User, pk=request.data["user_id"])
+        reqOtherUser = get_object_or_404(User, pk=request.data["other_userid"])
 
-            contactReq = ContactReq.objects.create(user=reqUser, 
-                otheruser=reqOtherUser)
-            return Response({"success": 20})
+        contactReq = ContactReq.objects.create(user=reqUser, 
+            otheruser=reqOtherUser)
+        return Response({"success": 20})
 
-        return Response({"error": 17})
+    return Response({"error": 17})
 
 
 @api_view(["POST"])
@@ -2507,17 +2506,16 @@ def get_contact_request(request):
             "token": "9bb7176dcdd06d196ef38c17600840d13943b9df"
         }
     """
-    if request.method == "POST":
-        token = request.data.get('token')
-        if Token.objects.filter(key=token).exists():
-            token = get_object_or_404(Token, key=token)
-            contactRequest=ContactReq.objects.filter(Q(otheruser_id=token.user_id)|Q(user_id=token.user_id))
+    token = request.data.get('token')
+    if Token.objects.filter(key=token).exists():
+        token = get_object_or_404(Token, key=token)
+        contactRequest=ContactReq.objects.filter(Q(otheruser_id=token.user_id)|Q(user_id=token.user_id))
 
-            serializer = ContactReqSerializer(contactRequest, many=True)
-            return Response({"success": 20,
-                             "request": serializer.data})
-        else:
-            return Response({"error": 17})
+        serializer = ContactReqSerializer(contactRequest, many=True)
+        return Response({"success": 20,
+                         "request": serializer.data})
+    else:
+        return Response({"error": 17})
 
 
 @api_view(["POST"])
@@ -2661,16 +2659,15 @@ def uget_user_by_token(request):
     """
     if request.method == "POST":
         token = request.data.get('token')
-        if token:
-            if Token.objects.filter(key=token).exists():
-                token = get_object_or_404(Token, key=token)
-                user = get_object_or_404(User, pk=token.user_id)
-                user_profile = get_object_or_404(UserProfile, user_id=token.user_id)
-                user_profile.qbchat_id = request.data["qbchat_id"]
-                user_profile.save()
-                serializer = UserSerializer(user)
-                return Response({"success": 20,
-                                 "user": serializer.data})
+        if Token.objects.filter(key=token).exists():
+            token = get_object_or_404(Token, key=token)
+            user = get_object_or_404(User, pk=token.user_id)
+            user_profile = get_object_or_404(UserProfile, user_id=token.user_id)
+            user_profile.qbchat_id = request.data["qbchat_id"]
+            user_profile.save()
+            serializer = UserSerializer(user)
+            return Response({"success": 20,
+                             "user": serializer.data})
         return Response({"error": 17})
 
 

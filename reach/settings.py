@@ -139,7 +139,7 @@ APNS_CERF_PATH = BASE_DIR+'/iphone_ck_prod.pem'
 APNS_CERF_SANDBOX_MODE = False
 
 # Lazy load
-PAGE_OFFSET = 5
+PAGE_OFFSET = 10
 FEED_PAGE_OFFSET = 10
 
 # Group list
