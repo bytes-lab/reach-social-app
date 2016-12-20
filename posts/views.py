@@ -633,8 +633,7 @@ def get_user_posts(request):
 
             serializer = PostSerializer(posts, many=True, context={'user_id': token.user_id})
             return Response({"success": 29,
-                             "post": serializer.data,
-                             "offset": end_offset})
+                             "post": serializer.data})
         else:
             return Response({"error": 17})
 
@@ -2099,8 +2098,7 @@ Search posts by hashtag.
             posts = Post.objects.filter(pk__in=posts_ids)[:PAGE_OFFSET]
             serializer = PostSerializer(posts, context={'user_id': token.user_id}, many=True)
             return Response({"success": 66,
-                             "posts": serializer.data,
-                             "offset": end_offset})
+                             "posts": serializer.data})
         else:
             return Response({"error": 17})
 
@@ -2296,8 +2294,7 @@ Search explore popular posts.
 
             serializer = PostSerializer(posts, context={'user_id': token.user_id}, many=True)
             return Response({"success": 63,
-                             "posts": serializer.data,
-                             "offset": end_offset})
+                             "posts": serializer.data})
         else:
             return Response({"error": 17})
 
