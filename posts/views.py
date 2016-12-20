@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
-from users.models import UserFeed, UserNotification, UserReport
+from users.models import UserFeed, UserNotification, UserReport, Userprofile
 from posts.models import Post, PostHashtag, Comment, Like, CommentLike
 from posts.serializers import PostSerializer, PostCommentSerializer
 
