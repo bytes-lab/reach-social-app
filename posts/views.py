@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
-from users.models import UserFeed, UserNotification, UserReport, Userprofile
+from users.models import UserFeed, UserNotification, UserReport, UserProfile
 from posts.models import Post, PostHashtag, Comment, Like, CommentLike
 from posts.serializers import PostSerializer, PostCommentSerializer
 
@@ -2271,10 +2271,10 @@ Search explore popular posts.
 
         if Token.objects.filter(key=token).exists():
             token = get_object_or_404(Token, key=token)
-            up = Userprofile.objects.get(user_id=token.user_id)
+            up = UserProfile.objects.get(user_id=token.user_id)
             user_ids = []
 
-            for u_p in Userprofile.objects.exclude(user_id=token.user_id):
+            for u_p in UserProfile.objects.exclude(user_id=token.user_id):
                 try:
                     if radius < 0 or get_straight_distance(up.latitude, up.longitude, u_p.latitude, u_p.longitude) < radius:
                         user_ids.append(u_p.user_id)
