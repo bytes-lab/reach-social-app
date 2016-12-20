@@ -624,7 +624,7 @@ def get_user_posts(request):
 
         if Token.objects.filter(key=token).exists():
             token = get_object_or_404(Token, key=token)
-            if post_id == "-1":
+            if post_id == -1:
                 posts = Post.objects.all().order_by("-date")[:PAGE_OFFSET]
             elif type_ == 'old':
                 posts = Post.objects.filter(pk__lt=post_id).order_by("-date")[:PAGE_OFFSET]
@@ -2088,7 +2088,7 @@ Search posts by hashtag.
             posts_ids = PostHashtag.objects.filter(hashtag__contains=hashtag). \
                 values_list("post_id", flat=True)
 
-            if post_id == "-1":
+            if post_id == -1:
                 posts = Post.objects.filter(pk__in=posts_ids).order_by("-date")[:PAGE_OFFSET]
             elif type_ == 'old':
                 posts = Post.objects.filter(pk__in=posts_ids, pk__lt=post_id).order_by("-date")[:PAGE_OFFSET]
@@ -2285,7 +2285,7 @@ Search explore popular posts.
                 values_list("post_id", flat=True)
             posts = Post.objects.filter(Q(text__contains=keyword) | Q(pk__in=posts_ids)).filter(author_id__in=user_ids)
 
-            if post_id == "-1":
+            if post_id == -1:
                 posts = posts.order_by("-date")[:PAGE_OFFSET]
             elif type_ == 'old':
                 posts = posts.filter(pk__lt=post_id).order_by("-date")[:PAGE_OFFSET]
