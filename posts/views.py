@@ -2274,7 +2274,7 @@ Search explore popular posts.
             up = UserProfile.objects.get(user_id=token.user_id)
             user_ids = []
 
-            for u_p in UserProfile.objects.exclude(user_id=token.user_id):
+            for u_p in UserProfile.objects.all():
                 try:
                     if radius < 0 or get_straight_distance(up.latitude, up.longitude, u_p.latitude, u_p.longitude) < radius:
                         user_ids.append(u_p.user_id)
