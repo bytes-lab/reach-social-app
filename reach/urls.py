@@ -11,7 +11,7 @@ from locate.views import create_group
 from posts.views import add_new_post, add_new_comment, get_user_posts, send_like, remove_like, rate_comment, \
     mark_best_response, explore_popular, explore_daily_upvotes, explore_most_upvoted, search_by_hashtag, \
     explore_popular_search, explore_daily_upvotes_search, explore_most_upvoted_search, get_single_post, remove_post, \
-    get_my_post
+    get_my_post, edit_post
 from users.views import registration, login, forgot_password, get_user_by_id, status_code, get_user_by_token, \
     change_email, change_password, change_bio, get_user_profile_by_token, get_user_profile_by_id, rate_user, \
     change_avatar, report_user, check_report_user_by_token, get_reported_users, send_report_email, \
@@ -79,6 +79,7 @@ urlpatterns = [
     url(r'^api/v1/user/social/instagram/$', connect_instagram),
     # posts
     url(r'^api/v1/post/add-new-post/$', add_new_post),
+    url(r'^api/v1/post/edit-post/$', edit_post),
     url(r'^api/v1/post/remove-post/$', remove_post),
     url(r'^api/v1/post/get-user-posts/$', get_user_posts),
     url(r'^api/v1/post/get-single-post/$', get_single_post),
