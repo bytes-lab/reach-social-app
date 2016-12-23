@@ -360,7 +360,7 @@ def edit_post(request):
             image_data = b64decode(image)
             post.image = ContentFile(image_data, "post.png")
 
-        if vid:
+        if video:
             video_data = b64decode(request.data["video"])
             post.video = ContentFile(video_data, "post.mov")
         post.save()
