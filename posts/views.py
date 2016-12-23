@@ -338,6 +338,7 @@ def edit_post(request):
     """
 
     token = request.data.get('token')
+    return Response({"error": 100})
     if Token.objects.filter(key=request.data["token"]).exists():
         post_id = request.data.get('post_id')
         text = request.data.get('text', '')
