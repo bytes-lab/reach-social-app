@@ -1508,7 +1508,7 @@ Please send only one parameter:
                         content = 'New report email from {}(id: {}) about POST: "{}" ' \
                                   '(post-id: {}). Post author {}(id: {})'.format(token.user.email,
                                                                                  token.user.id,
-                                                                                 post.text[:50],
+                                                                                 (post.text[:50]).encode('utf-8').strip(),
                                                                                  post.id,
                                                                                  post.author.email,
                                                                                  post.author.id)
