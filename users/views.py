@@ -1520,7 +1520,7 @@ Please send only one parameter:
                         content = 'New report email from {}(id: {}) about COMMENT: "{}" ' \
                                   '(comment-id: {}). Comment author {}(id: {})'.format(token.user.email,
                                                                                        token.user.id,
-                                                                                       comment.text[:50],
+                                                                                       (post.text[:50]).encode('utf-8').strip(),
                                                                                        comment.id,
                                                                                        comment.author.email,
                                                                                        comment.author.id)
@@ -1532,7 +1532,7 @@ Please send only one parameter:
                         content = 'New report email from {}(id: {}) about CIRCLE: "{}" ' \
                                   '(circle-id: {}). Circle creator {}(id: {})'.format(token.user.email,
                                                                                       token.user.id,
-                                                                                      circle.name[:50],
+                                                                                      (post.text[:50]).encode('utf-8').strip(),
                                                                                       circle.id,
                                                                                       circle.owner.email,
                                                                                       circle.owner.id)
