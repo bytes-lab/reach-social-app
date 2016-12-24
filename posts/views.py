@@ -338,7 +338,7 @@ def edit_post(request):
     """
 
     token = request.data.get('token')
-    return Response({"error": 100})
+    
     if Token.objects.filter(key=request.data["token"]).exists():
         post_id = request.data.get('post_id')
         text = request.data.get('text', '')
@@ -2473,11 +2473,11 @@ Search explore popular posts.
             posts = Post.objects.filter(Q(text__contains=keyword) | Q(pk__in=posts_ids)).filter(author_id__in=user_ids)
 
             if post_id == -1:
-                posts = posts.order_by("-date")[:PAGE_OFFSET]
+                posts = posts.order_by("-count_likes")[:PAGE_OFFSET]
             elif type_ == 'old':
-                posts = posts.filter(pk__lt=post_id).order_by("-date")[:PAGE_OFFSET]
+                posts = posts.filter(pk__lt=post_id).order_by("-count_likes")[:PAGE_OFFSET]
             else: # 'new'
-                posts = reversed(posts.filter(pk__gt=post_id).order_by("date")[:PAGE_OFFSET])
+                posts = reversed(posts.filter(pk__gt=post_id).order_by("count_likes")[:PAGE_OFFSET])
 
             serializer = PostSerializer(posts, context={'user_id': token.user_id}, many=True)
             return Response({"success": 63,
