@@ -12,7 +12,7 @@ from posts.serializers import PostSerializer, PostCommentSerializer
 
 from base64 import b64decode
 import datetime
-
+import math
 from apns import APNs, Payload
 
 from reach.settings import APNS_CERF_PATH, APNS_CERF_SANDBOX_MODE, PAGE_OFFSET
@@ -338,7 +338,7 @@ def edit_post(request):
     """
 
     token = request.data.get('token')
-    
+
     if Token.objects.filter(key=request.data["token"]).exists():
         post_id = request.data.get('post_id')
         text = request.data.get('text', '')
