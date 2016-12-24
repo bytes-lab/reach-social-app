@@ -2471,12 +2471,16 @@ Search explore popular posts.
                 values_list("post_id", flat=True)
             posts = Post.objects.filter(Q(text__contains=keyword) | Q(pk__in=posts_ids)).filter(author_id__in=user_ids)
 
+            posts = list(posts.order_by("-count_likes", "-id"))
             if post_id == -1:
-                posts = posts.order_by("-count_likes")[:PAGE_OFFSET]
-            elif type_ == 'old':
-                posts = posts.filter(pk__lt=post_id).order_by("-count_likes")[:PAGE_OFFSET]
-            else: # 'new'
-                posts = reversed(posts.filter(pk__gt=post_id).order_by("count_likes")[:PAGE_OFFSET])
+                posts = posts[:PAGE_OFFSET]
+            for i in range(len(posts)):
+                if posts[i].id == post_id:
+                    if type_ == 'old':
+                        posts = posts[i+1, i+PAGE_OFFSET+1]
+                    else:
+                        posts = posts[max(0, i-PAGE_OFFSET), i]
+                    break
 
             serializer = PostSerializer(posts, context={'user_id': token.user_id}, many=True)
             return Response({"success": 63,
