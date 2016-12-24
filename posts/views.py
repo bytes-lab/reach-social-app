@@ -2477,9 +2477,9 @@ Search explore popular posts.
             for i in range(len(posts)):
                 if posts[i].id == post_id:
                     if type_ == 'old':
-                        posts = posts[i+1, i+PAGE_OFFSET+1]
+                        posts = posts[i+1:i+PAGE_OFFSET+1]
                     else:
-                        posts = posts[max(0, i-PAGE_OFFSET), i]
+                        posts = posts[max(0, i-PAGE_OFFSET):i]
                     break
 
             serializer = PostSerializer(posts, context={'user_id': token.user_id}, many=True)
