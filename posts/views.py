@@ -2282,7 +2282,6 @@ Search posts by hashtag.
             else: # 'new'
                 posts = reversed(Post.objects.filter(pk__in=posts_ids, pk__gt=post_id).order_by("date")[:PAGE_OFFSET])
 
-            posts = Post.objects.filter(pk__in=posts_ids)[:PAGE_OFFSET]
             serializer = PostSerializer(posts, context={'user_id': token.user_id}, many=True)
             return Response({"success": 66,
                              "posts": serializer.data})
