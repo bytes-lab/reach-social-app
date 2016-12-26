@@ -1591,71 +1591,84 @@ Remove reported user
 @api_view(["POST"])
 def get_user_feed(request):
     """
-Get User Feed
+    Get User Feed
 
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
-        "offset": 0
-    }
+        Example json:
+        {
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
+            "notification_id": 10,
+            "type": "new" or "old"
+        }
 
-    Code statuses can be found here: /api/v1/docs/status-code/
+        Code statuses can be found here: /api/v1/docs/status-code/
 
-    Success json:
-    {
-        "feed": [
-            {
-                "id": 1,
-                "action_user": {
-                    "id": 4,
-                    "username": "antonsdfboksha",
-                    "first_name": "",
-                    "last_name": "",
-                    "email": "antonbosdfsdfksha@gmail.com",
-                    "info": {
-                        "full_name": "",
-                        "biography": "",
-                        "like_count": 0,
-                        "comment_count": 0,
-                        "rate": 1,
-                        "avatar": "/media/default_images/default.png",
-                        "is_facebook": false,
-                        "is_twitter": false,
-                        "is_instagram": false
+        Success json:
+        {
+            "feed": [
+                {
+                    "id": 1,
+                    "action_user": {
+                        "id": 4,
+                        "username": "antonsdfboksha",
+                        "first_name": "",
+                        "last_name": "",
+                        "email": "antonbosdfsdfksha@gmail.com",
+                        "info": {
+                            "full_name": "",
+                            "biography": "",
+                            "like_count": 0,
+                            "comment_count": 0,
+                            "rate": 1,
+                            "avatar": "/media/default_images/default.png",
+                            "is_facebook": false,
+                            "is_twitter": false,
+                            "is_instagram": false
+                        },
+                        "count_downvoted": 0,
+                        "count_upvoted": 0,
+                        "count_likes": 0,
+                        "count_comments": 0,
+                        "complete_likes": 0
                     },
-                    "count_downvoted": 0,
-                    "count_upvoted": 0,
-                    "count_likes": 0,
-                    "count_comments": 0,
-                    "complete_likes": 0
-                },
-                "action": "PostComment",
-                "object": 1,
-                "date": "2016-04-02T16:40:05.836267Z"
-            }
-        ],
-        "success": 76,
-        "offset": 10
-    }
+                    "action": "PostComment",
+                    "object": 1,
+                    "date": "2016-04-02T16:40:05.836267Z"
+                }
+            ],
+            "success": 76,
+            "offset": 10
+        }
 
-    Fail json:
-    {
-        "error": <status_code>
-    }
+        Fail json:
+        {
+            "error": <status_code>
+        }
     """
-    if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                token = get_object_or_404(Token, key=request.data["token"])
-                start_offset = request.data["offset"]
-                end_offset = start_offset + FEED_PAGE_OFFSET
-                feed = UserFeed.objects.filter(user=token.user).exclude(action_user=token.user).order_by("-date")[start_offset:end_offset]
-                serializer = UserFeedSerializer(feed, many=True)
-                return Response({"success": 76,
-                                 "feed": serializer.data,
-                                 "offset": end_offset})
-            else:
-                return Response({"error": 17})
+    token = request.data.get('token')
+    notification_id = request.data.get('notification_id')
+    type_ = request.data.get('type')
+    if Token.objects.filter(key=token).exists():
+        token = get_object_or_404(Token, key=token)
+
+        if notification_id == "-1":
+            feed = UserFeed.objects.filter(user=token.user) \
+                                   .exclude(action_user=token.user) \
+                                   .order_by("-date")[:FEED_PAGE_OFFSET]
+        elif type_ == 'old':
+            feed = UserFeed.objects.filter(user=token.user, pk__lt=notification_id) \
+                                   .exclude(action_user=token.user) \
+                                   .order_by("-date")[:FEED_PAGE_OFFSET]
+        else: # 'new'
+            feed = UserFeed.objects.filter(user=token.user, pk__gt=notification_id) \
+                                   .exclude(action_user=token.user) \
+                                   .order_by("date")[:FEED_PAGE_OFFSET]
+            feed = reversed(feed)
+
+        serializer = UserFeedSerializer(feed, many=True)
+        return Response({"success": 76,
+                         "feed": serializer.data})
+    else:
+        return Response({"error": 17})
 
 
 @api_view(["POST"])
