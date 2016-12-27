@@ -1650,7 +1650,7 @@ def get_user_feed(request):
     if Token.objects.filter(key=token).exists():
         token = get_object_or_404(Token, key=token)
 
-        if notification_id == "-1":
+        if notification_id == -1:
             feed = UserFeed.objects.filter(user=token.user) \
                                    .exclude(action_user=token.user) \
                                    .order_by("-date")[:FEED_PAGE_OFFSET]
