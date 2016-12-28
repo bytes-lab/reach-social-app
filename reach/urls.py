@@ -3,9 +3,9 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 
-from circles.views import create_new_circle, get_all_circles, get_created_circles, get_joined_circles, get_circle, \
-    join_circle, create_new_topic, get_topic, get_groups, send_reply, get_all_circles_search, \
-    get_created_circles_search, get_joined_circles_search, group_circle, group_notification
+from circles.views import create_new_circle, circle_search, get_created_circles, get_joined_circles, get_circle, \
+    join_circle, create_new_topic, get_topic, get_groups, send_reply, \
+    get_created_circles_search, get_joined_circles_search, group_notification
 from dashboard.views import sign_in, broadcast_notification, logout_user, broadcast_email
 from locate.views import create_group
 from posts.views import add_new_post, add_new_comment, get_user_posts, send_like, remove_like, rate_comment, \
@@ -93,13 +93,13 @@ urlpatterns = [
     url(r'^api/v1/post/remove-like/$', remove_like),
     # circles
     url(r'^api/v1/circle/create-new-circle/$', create_new_circle),
-    url(r'^api/v1/circle/get-all-circles/$', get_all_circles),
     url(r'^api/v1/circle/get-created-circles/$', get_created_circles),
     url(r'^api/v1/circle/get-joined-circles/$', get_joined_circles),
     url(r'^api/v1/circle/get-circle/$', get_circle),
     url(r'^api/v1/circle/join-circle/$', join_circle),
-    url(r'^api/v1/circle/get-circle-by-group/$', group_circle),
     url(r'^api/v1/circle/get-circle-notification/$', group_notification),
+    
+    url(r'^api/v1/circle/search/$', circle_search),
     # topics
     url(r'^api/v1/topic/create-new-topic/$', create_new_topic),
     url(r'^api/v1/topic/get-topic/$', get_topic),
@@ -118,7 +118,6 @@ urlpatterns = [
     url(r'^api/v1/explore/get-daily-upvotes/search/$', explore_daily_upvotes_search),
     url(r'^api/v1/explore/get-most-upvoted/search/$', explore_most_upvoted_search),
     # search circles
-    url(r'^api/v1/circle/get-all-circles/search/$', get_all_circles_search),
     url(r'^api/v1/circle/get-created-circles/search/$', get_created_circles_search),
     url(r'^api/v1/circle/get-joined-circles/search/$', get_joined_circles_search),
     # rate

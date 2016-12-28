@@ -218,71 +218,158 @@ Create a new circle.
 
 
 @api_view(["POST"])
-def get_all_circles(request):
+def circle_search(request):
     """
-Get all available circles.
+    Get all available circles.
 
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
-        "offset": 0
-    }
+        Example json:
+        {
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
+            "group_id": 23,
+            "circle_id": 54,
+            "type": "new" or "old",
+            "keyword": "happy"
+        }
 
-    Code statuses can be found here: /api/v1/docs/status-code/
+        Code statuses can be found here: /api/v1/docs/status-code/
 
-    Success json:
-    {
-        "circles": [
-            {
-                "id": 1,
-                "name": "qwe",
-                "owner": {
-                    "id": 2,
-                    "username": "antonboksha",
-                    "first_name": "",
-                    "last_name": "",
-                    "email": "antonboksha@gmail.com",
-                    "info": {
-                        "full_name": "",
-                        "biography": "",
-                        "like_count": 0,
-                        "comment_count": 0,
-                        "rate": 0,
-                        "avatar": "/media/default_images/default.png",
-                        "is_facebook": false,
-                        "is_twitter": false,
-                        "is_instagram": false
-                    }
-                },
-                "description": "asd",
-                "permission": true,
-                "image": "/media/circle/e4c2c9be-9356-454a-afff-514df03940e2.jpg",
-                "group": {
+        Success json:
+        {
+            "circles": [
+                {
                     "id": 1,
-                    "name": "sex",
-                    "count_circles": 1
-                },
-                "members_count": 1,
-                "join": true
-            }
-        ],
-        "success": 48,
-        "offset": 10
-    }
+                    "name": "qwe",
+                    "owner": {
+                        "id": 2,
+                        "username": "antonboksha",
+                        "first_name": "",
+                        "last_name": "",
+                        "email": "antonboksha@gmail.com",
+                        "info": {
+                            "full_name": "",
+                            "biography": "",
+                            "like_count": 0,
+                            "comment_count": 0,
+                            "rate": 0,
+                            "avatar": "/media/default_images/default.png",
+                            "is_facebook": false,
+                            "is_twitter": false,
+                            "is_instagram": false
+                        }
+                    },
+                    "description": "asd",
+                    "permission": true,
+                    "image": "/media/circle/e4c2c9be-9356-454a-afff-514df03940e2.jpg",
+                    "group": {
+                        "id": 1,
+                        "name": "sex",
+                        "count_circles": 1
+                    },
+                    "members_count": 1,
+                    "join": true
+                }
+            ],
+            "success": 48,
+            "offset": 10
+        }
 
-    Fail json:
-    {
-        "error": <status_code>
-    }
+        Fail json:
+        {
+            "error": <status_code>
+        }
+    """
+    token = request.data.get('token')
+    group_id = request.data.get('group_id')
+    circle_id = request.data.get('circle_id')
+    type_ = request.data.get('type')
+    keyword = request.data.get('keyword')
+
+    if Token.objects.filter(key=request.data["token"]).exists():
+        token = get_object_or_404(Token, key=token)
+        circles = Circle.objects.all()
+        if group_id > 0:
+            circles = circles.filter(group_id=circle_id)
+        circles = circles.filter(Q(name__icontains=keyword) | Q(description__icontains=keyword))
+
+        if circle_id == -1:
+            circles = circles.order_by("-date")[:PAGE_OFFSET]
+        elif type_ == 'old':
+            circles = circles.filter(pk__lt=circle_id).order_by("-date")[:PAGE_OFFSET]
+        else: # 'new'
+            circles = reversed(circles.filter(pk__gt=circle_id).order_by("date")[:PAGE_OFFSET])
+
+        serializer = CircleSerializer(circles, context={'user_id': token.user_id}, many=True)
+        return Response({"success": 48,
+                         "circles": serializer.data})
+    else:
+        return Response({"error": 17})
+
+
+@api_view(["POST"])
+def get_all_circles_search(request):
+    """
+    Search all available circles.
+
+        Example json:
+        {
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
+            "keyword": "qwerty",
+            "offset": 0
+        }
+
+        Code statuses can be found here: /api/v1/docs/status-code/
+
+        Success json:
+        {
+            "circles": [
+                {
+                    "id": 1,
+                    "name": "qwe",
+                    "owner": {
+                        "id": 2,
+                        "username": "antonboksha",
+                        "first_name": "",
+                        "last_name": "",
+                        "email": "antonboksha@gmail.com",
+                        "info": {
+                            "full_name": "",
+                            "biography": "",
+                            "like_count": 0,
+                            "comment_count": 0,
+                            "rate": 0,
+                            "avatar": "/media/default_images/default.png",
+                            "is_facebook": false,
+                            "is_twitter": false,
+                            "is_instagram": false
+                        }
+                    },
+                    "description": "asd",
+                    "permission": true,
+                    "image": "/media/circle/e4c2c9be-9356-454a-afff-514df03940e2.jpg",
+                    "group": {
+                        "id": 1,
+                        "name": "sex",
+                        "count_circles": 1
+                    },
+                    "members_count": 1,
+                    "join": true
+                }
+            ],
+            "success": 48
+        }
+
+        Fail json:
+        {
+            "error": <status_code>
+        }
     """
     if request.method == "POST":
         if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
             if Token.objects.filter(key=request.data["token"]).exists():
-                token = get_object_or_404(Token, key=request.data["token"])
                 start_offset = request.data["offset"]
                 end_offset = start_offset + PAGE_OFFSET
-                reported_users = UserReport.objects.filter(user=token.user).values_list('reported_id', flat=True)
-                circles = Circle.objects.exclude(owner__in=reported_users)[start_offset:end_offset]
+                circles = Circle.objects.filter(Q(name__contains=request.data["keyword"]) |
+                                                Q(description=request.data["keyword"]))[start_offset:end_offset]
                 token = get_object_or_404(Token, key=request.data["token"])
                 serializer = CircleSerializer(circles, context={'user_id': token.user_id}, many=True)
                 return Response({"success": 48,
@@ -290,7 +377,6 @@ Get all available circles.
                                  "offset": end_offset})
             else:
                 return Response({"error": 17})
-
 
 @api_view(["POST"])
 def get_created_circles(request):
@@ -1043,46 +1129,47 @@ Get single topic in circle.
 @api_view(["POST"])
 def get_groups(request):
     """
-Get list of groups and count of circles in each group.
+    Get list of groups and count of circles in each group.
 
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
-    }
+        Example json:
+        {
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
+            "keyword": "holiday"
+        }
 
-    Code statuses can be found here: /api/v1/docs/status-code/
+        Code statuses can be found here: /api/v1/docs/status-code/
 
-    Success json:
-    {
-        "groups": [
-            {
-                "id": 1,
-                "name": "sex",
-                "count_circles": 1
-            },
-            {
-                "id": 2,
-                "name": "anger",
-                "count_circles": 0
-            }
-        ],
-        "success": 58
-    }
+        Success json:
+        {
+            "groups": [
+                {
+                    "id": 1,
+                    "name": "sex",
+                    "count_circles": 1
+                },
+                {
+                    "id": 2,
+                    "name": "anger",
+                    "count_circles": 0
+                }
+            ],
+            "success": 58
+        }
 
-    Fail json:
-    {
-        "error": <status_code>
-    }
+        Fail json:
+        {
+            "error": <status_code>
+        }
     """
-    if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                groups = Group.objects.all().order_by("name")
-                serializer = GroupSerializer(groups, many=True)
-                return Response({"success": 58,
-                                 "groups": serializer.data})
-            else:
-                return Response({"error": 17})
+    token = request.data.get('token')
+    keyword = request.data.get('keyword', '')    
+    if Token.objects.filter(key=token).exists():
+        groups = Group.objects.filter(name__icontains=keyword).order_by("name")
+        serializer = GroupSerializer(groups, many=True)
+        return Response({"success": 58,
+                         "groups": serializer.data})
+    else:
+        return Response({"error": 17})
 
 
 @api_view(["POST"])
@@ -1316,80 +1403,6 @@ Send reply to the topic in circle.
 
 
 @api_view(["POST"])
-def get_all_circles_search(request):
-    """
-Search all available circles.
-
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
-        "keyword": "qwerty",
-        "offset": 0
-    }
-
-    Code statuses can be found here: /api/v1/docs/status-code/
-
-    Success json:
-    {
-        "circles": [
-            {
-                "id": 1,
-                "name": "qwe",
-                "owner": {
-                    "id": 2,
-                    "username": "antonboksha",
-                    "first_name": "",
-                    "last_name": "",
-                    "email": "antonboksha@gmail.com",
-                    "info": {
-                        "full_name": "",
-                        "biography": "",
-                        "like_count": 0,
-                        "comment_count": 0,
-                        "rate": 0,
-                        "avatar": "/media/default_images/default.png",
-                        "is_facebook": false,
-                        "is_twitter": false,
-                        "is_instagram": false
-                    }
-                },
-                "description": "asd",
-                "permission": true,
-                "image": "/media/circle/e4c2c9be-9356-454a-afff-514df03940e2.jpg",
-                "group": {
-                    "id": 1,
-                    "name": "sex",
-                    "count_circles": 1
-                },
-                "members_count": 1,
-                "join": true
-            }
-        ],
-        "success": 48
-    }
-
-    Fail json:
-    {
-        "error": <status_code>
-    }
-    """
-    if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                start_offset = request.data["offset"]
-                end_offset = start_offset + PAGE_OFFSET
-                circles = Circle.objects.filter(Q(name__contains=request.data["keyword"]) |
-                                                Q(description=request.data["keyword"]))[start_offset:end_offset]
-                token = get_object_or_404(Token, key=request.data["token"])
-                serializer = CircleSerializer(circles, context={'user_id': token.user_id}, many=True)
-                return Response({"success": 48,
-                                 "circles": serializer.data,
-                                 "offset": end_offset})
-            else:
-                return Response({"error": 17})
-
-
-@api_view(["POST"])
 def get_created_circles_search(request):
     """
 Search all available created circles.
@@ -1535,154 +1548,6 @@ Get all available joined circles.
                     Q(description=request.data["keyword"]))[start_offset:end_offset]
                 serializer = CircleSerializer(circles, context={'user_id': token.user_id}, many=True)
                 return Response({"success": 50,
-                                 "circles": serializer.data,
-                                 "offset": end_offset})
-            else:
-                return Response({"error": 17})
-
-
-@api_view(["POST"])
-def get_all_circles(request):
-    """
-Get all available circles.
-
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
-        "offset": 0
-    }
-
-    Code statuses can be found here: /api/v1/docs/status-code/
-
-    Success json:
-    {
-        "circles": [
-            {
-                "id": 1,
-                "name": "qwe",
-                "owner": {
-                    "id": 2,
-                    "username": "antonboksha",
-                    "first_name": "",
-                    "last_name": "",
-                    "email": "antonboksha@gmail.com",
-                    "info": {
-                        "full_name": "",
-                        "biography": "",
-                        "like_count": 0,
-                        "comment_count": 0,
-                        "rate": 0,
-                        "avatar": "/media/default_images/default.png",
-                        "is_facebook": false,
-                        "is_twitter": false,
-                        "is_instagram": false
-                    }
-                },
-                "description": "asd",
-                "permission": true,
-                "image": "/media/circle/e4c2c9be-9356-454a-afff-514df03940e2.jpg",
-                "group": {
-                    "id": 1,
-                    "name": "sex",
-                    "count_circles": 1
-                },
-                "members_count": 1,
-                "join": true
-            }
-        ],
-        "success": 48,
-        "offset": 10
-    }
-
-    Fail json:
-    {
-        "error": <status_code>
-    }
-    """
-    if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                token = get_object_or_404(Token, key=request.data["token"])
-                start_offset = request.data["offset"]
-                end_offset = start_offset + PAGE_OFFSET
-                reported_users = UserReport.objects.filter(user=token.user).values_list('reported_id', flat=True)
-                circles = Circle.objects.exclude(owner__in=reported_users)[start_offset:end_offset]
-                token = get_object_or_404(Token, key=request.data["token"])
-                serializer = CircleSerializer(circles, context={'user_id': token.user_id}, many=True)
-                return Response({"success": 48,
-                                 "circles": serializer.data,
-                                 "offset": end_offset})
-            else:
-                return Response({"error": 17})
-
-
-@api_view(["POST"])
-def group_circle(request):
-    """
-Get all available created circles.
-
-    Example json:
-    {
-	"token";
-        "group_id": 12,
-	"offset" : 12
-    }
-
-    Code statuses can be found here: /api/v1/docs/status-code/
-
-    Success json:
-    {
-        "circles": [
-            {
-                "id": 1,
-                "name": "qwe",
-                "owner": {
-                    "id": 2,
-                    "username": "antonboksha",
-                    "first_name": "",
-                    "last_name": "",
-                    "email": "antonboksha@gmail.com",
-                    "info": {
-                        "full_name": "",
-                        "biography": "",
-                        "like_count": 0,
-                        "comment_count": 0,
-                        "rate": 0,
-                        "avatar": "/media/default_images/default.png",
-                        "is_facebook": false,
-                        "is_twitter": false,
-                        "is_instagram": false
-                    }
-                },
-                "description": "asd",
-                "permission": true,
-                "image": "/media/circle/e4c2c9be-9356-454a-afff-514df03940e2.jpg",
-                "group": {
-                    "id": 1,
-                    "name": "sex",
-                    "count_circles": 1
-                },
-                "members_count": 1,
-                "join": true
-            }
-        ],
-        "success": 49,
-        "offset": 10
-    }
-
-    Fail json:
-    {
-        "error": <status_code>
-    }
-    """
-    if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                start_offset = request.data["offset"]
-                end_offset = start_offset + PAGE_OFFSET
-                circles = Circle.objects.filter(group_id=request.data["group_id"])[start_offset:end_offset]
-                serializer = CircleSerializer(circles, many=True)
-                return Response({"success": 49,
                                  "circles": serializer.data,
                                  "offset": end_offset})
             else:
