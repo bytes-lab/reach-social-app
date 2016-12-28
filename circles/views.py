@@ -288,7 +288,7 @@ def circle_search(request):
         token = get_object_or_404(Token, key=token)
         circles = Circle.objects.all()
         if group_id > 0:
-            circles = circles.filter(group_id=circle_id)
+            circles = circles.filter(group_id=group_id)
         circles = circles.filter(Q(name__icontains=keyword) | Q(description__icontains=keyword))
 
         if circle_id == -1:
