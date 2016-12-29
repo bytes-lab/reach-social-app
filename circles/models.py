@@ -58,7 +58,7 @@ class Notification(models.Model):
     detail = models.CharField(max_length=70)
     notitype = models.IntegerField(default=0)
     date = models.DateTimeField(auto_now_add=True)
-    topic = models.ForeignKey(Topic, related_name="notification_topics")
+    topic = models.ForeignKey(Topic, related_name="notification_topics", null=True, blank=True)
 
     def __unicode__(self):
         return r'%s create %s on %s' % (self.user.username,

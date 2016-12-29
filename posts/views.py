@@ -382,191 +382,191 @@ def edit_post(request):
 @api_view(["POST"])
 def add_new_comment(request):
     """
-Add new comment method.
+    Add new comment method.
 
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
-        "text": "Some post text here...",
-        "post_id": 1,
-        "permission": true
-    }
-
-    Code statuses can be found here: /api/v1/docs/status-code/
-
-    Success json:
-    {
-        "success": <status_code>,
-        "post": {
-            "id": 11,
-            "author": {
-                "id": 2,
-                "username": "antonboksha",
-                "first_name": "",
-                "last_name": "",
-                "email": "antonboksha@gmail.com",
-                "info": {
-                    "full_name": "",
-                    "biography": "qweqweqwe",
-                    "like_count": 0,
-                    "comment_count": 0,
-                    "rate": 10,
-                    "avatar": "/media/userprofile/849d5d9c-e968-4c7c-b96c-23aa46a719fd.png",
-                    "is_facebook": false,
-                    "is_twitter": false,
-                    "is_instagram": false
-                },
-                "count_downvoted": 1,
-                "count_upvoted": 1,
-                "count_likes": 1,
-                "count_comments": 2,
-                "complete_likes": 50
-            },
-            "text": "here we fucking go!2",
-            "like_count": 0,
-            "comment_count": 0,
-            "date": "2015-11-23T10:44:28.217756Z",
-            "permission": true,
-            "image": "/media/default_images/default.png",
-            "post_hashtags": [
-                {
-                    "id": 7,
-                    "hashtag": "first"
-                },
-                {
-                    "id": 8,
-                    "hashtag": "second"
-                },
-                {
-                    "id": 9,
-                    "hashtag": "third"
-                }
-            ],
-            "post_comments": [
-            {
-                "id": 1,
-                "text": "Some post text here...",
-                "author": {
-                    "id": 2,
-                    "username": "antonboksha",
-                    "first_name": "",
-                    "last_name": "",
-                    "email": "antonboksha@gmail.com",
-                    "info": {
-                        "full_name": "",
-                        "biography": "",
-                        "like_count": 0,
-                        "comment_count": 0,
-                        "rate": 0,
-                        "avatar": "/media/default_images/default.png",
-                        "is_facebook": false,
-                        "is_twitter": false,
-                        "is_instagram": false
-                    },
-                    "count_downvoted": 1,
-                    "count_upvoted": 1,
-                    "count_likes": 1,
-                    "count_comments": 1,
-                    "complete_likes": 50
-                },
-                "date": "2015-11-23T16:21:24.335014Z",
-                "permission": true,
-                "rate": 0,
-                "is_upvoted": false,
-                "is_downvoted": false,
-                "best_response": false
-            },
-            {
-                "id": 2,
-                "text": "Some post text here...",
-                "author": {
-                    "id": 2,
-                    "username": "antonboksha",
-                    "first_name": "",
-                    "last_name": "",
-                    "email": "antonboksha@gmail.com",
-                    "info": {
-                        "full_name": "",
-                        "biography": "",
-                        "like_count": 0,
-                        "comment_count": 0,
-                        "rate": 0,
-                        "avatar": "/media/default_images/default.png",
-                        "is_facebook": false,
-                        "is_twitter": false,
-                        "is_instagram": false
-                    },
-                    "count_downvoted": 1,
-                    "count_upvoted": 1,
-                    "count_likes": 1,
-                    "count_comments": 1,
-                    "complete_likes": 50
-                },
-                "date": "2015-11-23T16:23:42.295629Z",
-                "permission": true,
-                "rate": 0,
-                "is_upvoted": false,
-                "is_downvoted": false,
-                "best_response": false
-            }],
-            "like_count": 0,
-            "comment_count": 0,
+        Example json:
+        {
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
+            "text": "Some post text here...",
+            "post_id": 1,
+            "permission": true
         }
-    }
 
-    Fail json:
-    {
-        "error": <status_code>
-    }
+        Code statuses can be found here: /api/v1/docs/status-code/
+
+        Success json:
+        {
+            "success": <status_code>,
+            "post": {
+                "id": 11,
+                "author": {
+                    "id": 2,
+                    "username": "antonboksha",
+                    "first_name": "",
+                    "last_name": "",
+                    "email": "antonboksha@gmail.com",
+                    "info": {
+                        "full_name": "",
+                        "biography": "qweqweqwe",
+                        "like_count": 0,
+                        "comment_count": 0,
+                        "rate": 10,
+                        "avatar": "/media/userprofile/849d5d9c-e968-4c7c-b96c-23aa46a719fd.png",
+                        "is_facebook": false,
+                        "is_twitter": false,
+                        "is_instagram": false
+                    },
+                    "count_downvoted": 1,
+                    "count_upvoted": 1,
+                    "count_likes": 1,
+                    "count_comments": 2,
+                    "complete_likes": 50
+                },
+                "text": "here we fucking go!2",
+                "like_count": 0,
+                "comment_count": 0,
+                "date": "2015-11-23T10:44:28.217756Z",
+                "permission": true,
+                "image": "/media/default_images/default.png",
+                "post_hashtags": [
+                    {
+                        "id": 7,
+                        "hashtag": "first"
+                    },
+                    {
+                        "id": 8,
+                        "hashtag": "second"
+                    },
+                    {
+                        "id": 9,
+                        "hashtag": "third"
+                    }
+                ],
+                "post_comments": [
+                {
+                    "id": 1,
+                    "text": "Some post text here...",
+                    "author": {
+                        "id": 2,
+                        "username": "antonboksha",
+                        "first_name": "",
+                        "last_name": "",
+                        "email": "antonboksha@gmail.com",
+                        "info": {
+                            "full_name": "",
+                            "biography": "",
+                            "like_count": 0,
+                            "comment_count": 0,
+                            "rate": 0,
+                            "avatar": "/media/default_images/default.png",
+                            "is_facebook": false,
+                            "is_twitter": false,
+                            "is_instagram": false
+                        },
+                        "count_downvoted": 1,
+                        "count_upvoted": 1,
+                        "count_likes": 1,
+                        "count_comments": 1,
+                        "complete_likes": 50
+                    },
+                    "date": "2015-11-23T16:21:24.335014Z",
+                    "permission": true,
+                    "rate": 0,
+                    "is_upvoted": false,
+                    "is_downvoted": false,
+                    "best_response": false
+                },
+                {
+                    "id": 2,
+                    "text": "Some post text here...",
+                    "author": {
+                        "id": 2,
+                        "username": "antonboksha",
+                        "first_name": "",
+                        "last_name": "",
+                        "email": "antonboksha@gmail.com",
+                        "info": {
+                            "full_name": "",
+                            "biography": "",
+                            "like_count": 0,
+                            "comment_count": 0,
+                            "rate": 0,
+                            "avatar": "/media/default_images/default.png",
+                            "is_facebook": false,
+                            "is_twitter": false,
+                            "is_instagram": false
+                        },
+                        "count_downvoted": 1,
+                        "count_upvoted": 1,
+                        "count_likes": 1,
+                        "count_comments": 1,
+                        "complete_likes": 50
+                    },
+                    "date": "2015-11-23T16:23:42.295629Z",
+                    "permission": true,
+                    "rate": 0,
+                    "is_upvoted": false,
+                    "is_downvoted": false,
+                    "best_response": false
+                }],
+                "like_count": 0,
+                "comment_count": 0,
+            }
+        }
+
+        Fail json:
+        {
+            "error": <status_code>
+        }
     """
-    if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                if "text" in request.data and request.data["text"] != "" and request.data["text"] is not None:
-                    if len(request.data["text"]) < 10:
-                        return Response({"error": 24})
-                    elif len(request.data["text"]) > 255:
-                        return Response({"error": 25})
-                    else:
-                        if "post_id" in request.data and request.data["post_id"] != "" and \
-                                        request.data["post_id"] is not None:
-                            if type(request.data["post_id"]) is int:
-                                if Post.objects.filter(pk=request.data["post_id"]).exists():
-                                    token = get_object_or_404(Token, key=request.data["token"])
-                                    post = get_object_or_404(Post, pk=request.data["post_id"])
-                                    comment = Comment.objects.create(post=post,
-                                                                     author_id=token.user_id,
-                                                                     text=request.data["text"],
-                                                                     permission=request.data["permission"])
-                                    serializer = PostSerializer(post, context={'user_id': token.user_id})
-                                    if request.data["permission"]:
-                                        UserFeed.objects.create(user=post.author,
-                                                                action_user=token.user,
-                                                                post_comment=comment,
-                                                                action="PostComment")
-                                        message = "{} commented on your post".format(token.user.username)
-                                    else:
-                                        message = "Anonymous commented on your post"
-                                    if post.author != token.user:
-                                        custom = {
-                                            "post_id": post.id
-                                        }
-                                        apns = APNs(use_sandbox=APNS_CERF_SANDBOX_MODE, cert_file=APNS_CERF_PATH)
-                                        payload = Payload(alert=message, sound="default", category="TEST", badge=1,
-                                                          custom=custom)
-                                        user_notifications = UserNotification.objects.filter(user=post.author)
-                                        for user_notification in user_notifications:
-                                            try:
-                                                apns.gateway_server.send_notification(user_notification.device_token,
-                                                                                      payload)
-                                            except:
-                                                pass
-                                    return Response({"success": 26,
-                                                     "post": serializer.data})
-                                else:
-                                    return Response({"error": 27})
+    token = request.data.get('token')
+    text = request.data.get('text', '')
+    post_id = request.data.get('post_id', '')
+    permission = request.data.get('permission')
+
+    if Token.objects.filter(key=token).exists():
+        if len(text) < 10:
+            return Response({"error": 24})
+        if len(text) > 255:
+            return Response({"error": 25})
+
+        if type(post_id) is int:
+            if Post.objects.filter(pk=post_id).exists():
+                token = get_object_or_404(Token, key=token)
+                post = get_object_or_404(Post, pk=post_id)
+                comment = Comment.objects.create(post=post,
+                                                 author_id=token.user_id,
+                                                 text=text,
+                                                 permission=permission)
+                serializer = PostSerializer(post, context={'user_id': token.user_id})
+                if permission:
+                    UserFeed.objects.create(user=post.author,
+                                            action_user=token.user,
+                                            post_comment=comment,
+                                            action="PostComment")
+                    message = "{} commented on your post".format(token.user.username)
+                else:
+                    message = "Anonymous commented on your post"
+                if post.author != token.user:
+                    custom = {
+                        "post_id": post.id
+                    }
+                    apns = APNs(use_sandbox=APNS_CERF_SANDBOX_MODE, cert_file=APNS_CERF_PATH)
+                    payload = Payload(alert=message, sound="default", category="TEST", badge=1,
+                                      custom=custom)
+                    user_notifications = UserNotification.objects.filter(user=post.author)
+                    for user_notification in user_notifications:
+                        try:
+                            apns.gateway_server.send_notification(user_notification.device_token,
+                                                                  payload)
+                        except:
+                            pass
+                return Response({"success": 26,
+                                 "post": serializer.data})
             else:
-                return Response({"error": 17})
+                return Response({"error": 27})
+    else:
+        return Response({"error": 17})
 
 
 @api_view(["POST"])
