@@ -298,7 +298,9 @@ def circle_search(request):
         else: # 'new'
             circles = reversed(circles.filter(pk__gt=circle_id).order_by("date")[:PAGE_OFFSET])
 
-        serializer = CircleSerializer(circles, context={'user_id': token.user_id}, many=True)
+        # serializer = CircleSerializer(circles, context={'user_id': token.user_id}, many=True)
+        serializer = FullCircleSerializer(circles, context={'user_id': token.user_id}, many=True)
+        
         return Response({"success": 48,
                          "circles": serializer.data})
     else:
