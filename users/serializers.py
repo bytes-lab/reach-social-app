@@ -139,6 +139,8 @@ class UserFeedSerializer(serializers.ModelSerializer):
             return PostSerializer(obj.like.post).data
         elif obj.post_comment and obj.action == "PostComment":
             return PostSerializer(obj.post_comment.post).data
+        elif obj.post_comment and obj.action == "PostCommentComment":
+            return PostSerializer(obj.post_comment.post).data
         elif obj.topic_comment and obj.action == "TopicComment":
             return TopicSerializer(obj.topic_comment.topic).data
         elif obj.user_rate and obj.action == "Feedback":
