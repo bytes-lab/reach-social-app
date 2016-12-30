@@ -31,8 +31,15 @@ class NotificationSerializer(serializers.ModelSerializer):
 
 class TopicSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
-    replies = TopicCommentSerializer(many=True, read_only=True)
+    replies = serializers.SerializerMethodField("get_topic_replies")
     date = serializers.SerializerMethodField("get_format_date")
+
+    def get_topic_replies(self, obj):
+        # user_id = self.context.get("user_id")
+        # reported_users = UserReport.objects.filter(user_id=user_id).values_list('reported_id', flat=True)
+        replies = TopicComment.objects.filter(topic=obj)
+
+        return TopicCommentSerializer(replies, many=True).data
 
     def get_format_date(self, obj):
         return obj.date.strftime("%H:%M:%S %Y:%m:%d")
