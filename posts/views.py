@@ -1,6 +1,7 @@
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.contrib.auth.models import User
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -545,6 +546,20 @@ def add_new_comment(request):
                                             post_comment=comment,
                                             action="PostComment")
                     message = "{} commented on your post".format(token.user.username)
+
+                    # check @ for users                    
+                    for item in text.split(' '):
+                        if item and item[0] == '@':
+                            username = item[1:].lower()
+                            user = User.objects.first(username__iexact=username)
+                            if not user:
+                                continue
+                            UserFeed.objects.create(user=user,
+                                                    action_user=token.user,
+                                                    post_comment=comment,
+                                                    action="PostCommentComment")
+                            message = "{} commented on your comment".format(token.user.username)
+
                 else:
                     message = "Anonymous commented on your post"
                 if post.author != token.user:
