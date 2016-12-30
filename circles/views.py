@@ -708,157 +708,157 @@ Get single circle by circle_id.
 @api_view(["POST"])
 def join_circle(request):
     """
-Join/Unjoin circle via circle_id.
+    Join/Unjoin circle via circle_id.
 
-    Example json:
-    {
-        "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
-        "circle_id": 1
-    }
+        Example json:
+        {
+            "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
+            "circle_id": 1
+        }
 
-    Code statuses can be found here: /api/v1/docs/status-code/
+        Code statuses can be found here: /api/v1/docs/status-code/
 
-    Success json:
-    {
-        "circle": {
-            "id": 1,
-            "name": "qwe",
-            "owner": {
-                "id": 2,
-                "username": "antonboksha",
-                "first_name": "",
-                "last_name": "",
-                "email": "antonboksha@gmail.com",
-                "info": {
-                    "full_name": "",
-                    "biography": "",
-                    "like_count": 0,
-                    "comment_count": 0,
-                    "rate": 0,
-                    "avatar": "/media/default_images/default.png",
-                    "is_facebook": false,
-                    "is_twitter": false,
-                    "is_instagram": false
-                }
-            },
-            "description": "asd",
-            "permission": true,
-            "image": "/media/circle/e4c2c9be-9356-454a-afff-514df03940e2.jpg",
-            "group": {
+        Success json:
+        {
+            "circle": {
                 "id": 1,
-                "name": "sex",
-                "count_circles": 1
-            },
-            "members_count": 1,
-            "join": false,
-            "topics": [
-                {
+                "name": "qwe",
+                "owner": {
+                    "id": 2,
+                    "username": "antonboksha",
+                    "first_name": "",
+                    "last_name": "",
+                    "email": "antonboksha@gmail.com",
+                    "info": {
+                        "full_name": "",
+                        "biography": "",
+                        "like_count": 0,
+                        "comment_count": 0,
+                        "rate": 0,
+                        "avatar": "/media/default_images/default.png",
+                        "is_facebook": false,
+                        "is_twitter": false,
+                        "is_instagram": false
+                    }
+                },
+                "description": "asd",
+                "permission": true,
+                "image": "/media/circle/e4c2c9be-9356-454a-afff-514df03940e2.jpg",
+                "group": {
                     "id": 1,
-                    "author": {
-                        "id": 2,
-                        "username": "antonboksha",
-                        "first_name": "",
-                        "last_name": "",
-                        "email": "antonboksha@gmail.com",
-                        "info": {
-                            "full_name": "",
-                            "biography": "",
-                            "like_count": 0,
-                            "comment_count": 0,
-                            "rate": 0,
-                            "avatar": "/media/default_images/default.png",
-                            "is_facebook": false,
-                            "is_twitter": false,
-                            "is_instagram": false
-                        }
-                    },
-                    "text": "some problem here",
-                    "permission": true,
-                    "date": "2016-02-02T14:16:59.161082Z",
-                    "replies": [
-                        {
-                            "id": 1,
-                            "author": {
-                                "id": 2,
-                                "username": "antonboksha",
-                                "first_name": "",
-                                "last_name": "",
-                                "email": "antonboksha@gmail.com",
-                                "info": {
-                                    "full_name": "",
-                                    "biography": "",
-                                    "like_count": 0,
-                                    "comment_count": 0,
-                                    "rate": 0,
-                                    "avatar": "/media/default_images/default.png",
-                                    "is_facebook": false,
-                                    "is_twitter": false,
-                                    "is_instagram": false
-                                }
-                            },
-                            "text": "my aweasome text",
-                            "permission": true,
-                            "date": "2016-02-03T14:44:10.029647Z"
-                        },
-                        {
+                    "name": "sex",
+                    "count_circles": 1
+                },
+                "members_count": 1,
+                "join": false,
+                "topics": [
+                    {
+                        "id": 1,
+                        "author": {
                             "id": 2,
-                            "author": {
-                                "id": 2,
-                                "username": "antonboksha",
-                                "first_name": "",
-                                "last_name": "",
-                                "email": "antonboksha@gmail.com",
-                                "info": {
-                                    "full_name": "",
-                                    "biography": "",
-                                    "like_count": 0,
-                                    "comment_count": 0,
-                                    "rate": 0,
-                                    "avatar": "/media/default_images/default.png",
-                                    "is_facebook": false,
-                                    "is_twitter": false,
-                                    "is_instagram": false
-                                }
-                            },
-                            "text": "my aweasome text",
-                            "permission": true,
-                            "date": "2016-02-03T14:52:15.435364Z"
+                            "username": "antonboksha",
+                            "first_name": "",
+                            "last_name": "",
+                            "email": "antonboksha@gmail.com",
+                            "info": {
+                                "full_name": "",
+                                "biography": "",
+                                "like_count": 0,
+                                "comment_count": 0,
+                                "rate": 0,
+                                "avatar": "/media/default_images/default.png",
+                                "is_facebook": false,
+                                "is_twitter": false,
+                                "is_instagram": false
+                            }
                         },
-                        {
-                            "id": 3,
-                            "author": {
-                                "id": 2,
-                                "username": "antonboksha",
-                                "first_name": "",
-                                "last_name": "",
-                                "email": "antonboksha@gmail.com",
-                                "info": {
-                                    "full_name": "",
-                                    "biography": "",
-                                    "like_count": 0,
-                                    "comment_count": 0,
-                                    "rate": 0,
-                                    "avatar": "/media/default_images/default.png",
-                                    "is_facebook": false,
-                                    "is_twitter": false,
-                                    "is_instagram": false
-                                }
+                        "text": "some problem here",
+                        "permission": true,
+                        "date": "2016-02-02T14:16:59.161082Z",
+                        "replies": [
+                            {
+                                "id": 1,
+                                "author": {
+                                    "id": 2,
+                                    "username": "antonboksha",
+                                    "first_name": "",
+                                    "last_name": "",
+                                    "email": "antonboksha@gmail.com",
+                                    "info": {
+                                        "full_name": "",
+                                        "biography": "",
+                                        "like_count": 0,
+                                        "comment_count": 0,
+                                        "rate": 0,
+                                        "avatar": "/media/default_images/default.png",
+                                        "is_facebook": false,
+                                        "is_twitter": false,
+                                        "is_instagram": false
+                                    }
+                                },
+                                "text": "my aweasome text",
+                                "permission": true,
+                                "date": "2016-02-03T14:44:10.029647Z"
                             },
-                            "text": "my aweasome text",
-                            "permission": true,
-                            "date": "2016-02-03T14:52:34.359412Z"
-                        }
-                    ]
-                }
-            ]
-        },
-        "success": 54
-    }
+                            {
+                                "id": 2,
+                                "author": {
+                                    "id": 2,
+                                    "username": "antonboksha",
+                                    "first_name": "",
+                                    "last_name": "",
+                                    "email": "antonboksha@gmail.com",
+                                    "info": {
+                                        "full_name": "",
+                                        "biography": "",
+                                        "like_count": 0,
+                                        "comment_count": 0,
+                                        "rate": 0,
+                                        "avatar": "/media/default_images/default.png",
+                                        "is_facebook": false,
+                                        "is_twitter": false,
+                                        "is_instagram": false
+                                    }
+                                },
+                                "text": "my aweasome text",
+                                "permission": true,
+                                "date": "2016-02-03T14:52:15.435364Z"
+                            },
+                            {
+                                "id": 3,
+                                "author": {
+                                    "id": 2,
+                                    "username": "antonboksha",
+                                    "first_name": "",
+                                    "last_name": "",
+                                    "email": "antonboksha@gmail.com",
+                                    "info": {
+                                        "full_name": "",
+                                        "biography": "",
+                                        "like_count": 0,
+                                        "comment_count": 0,
+                                        "rate": 0,
+                                        "avatar": "/media/default_images/default.png",
+                                        "is_facebook": false,
+                                        "is_twitter": false,
+                                        "is_instagram": false
+                                    }
+                                },
+                                "text": "my aweasome text",
+                                "permission": true,
+                                "date": "2016-02-03T14:52:34.359412Z"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "success": 54
+        }
 
-    Fail json:
-    {
-        "error": <status_code>
-    }
+        Fail json:
+        {
+            "error": <status_code>
+        }
     """
     if request.method == "POST":
         if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
@@ -876,7 +876,9 @@ Join/Unjoin circle via circle_id.
                                                                    detail="Join your Group",
                                                                    notitype=2)
                         notification.save()
-                    serializer = CircleSerializer(circle, context={'user_id': token.user_id})
+                    # serializer = CircleSerializer(circle, context={'user_id': token.user_id})
+                    serializer = FullCircleSerializer(circle, context={'user_id': token.user_id})
+                    
                     return Response({"success": 54,
                                      "circle": serializer.data})
                 else:
@@ -1375,15 +1377,16 @@ Send reply to the topic in circle.
                                                                 text=request.data["text"],
                                                                 permission=request.data["permission"])
                     circle = get_object_or_404(Circle, pk=topic.circle_id)
-                    serializer = CircleSerializer(circle)
-
-		    notification = Notification.objects.create(user=topic.author,
-							       circle=topic.circle,
-							       otheruser_id=token.user_id,
-							       notitype=0,
-							       topic=topic,
-							       detail=request.data["text"])
-		    notification.save()
+                    # serializer = CircleSerializer(circle)
+                    serializer = FullCircleSerializer(circle)
+                    
+                    notification = Notification.objects.create(user=topic.author,
+                                                               circle=topic.circle,
+                                                               otheruser_id=token.user_id,
+                                                               notitype=0,
+                                                               topic=topic,
+                                                               detail=request.data["text"])
+                    notification.save()
 							       
                     if request.data["permission"]:
                         UserFeed.objects.create(user=topic.author,
