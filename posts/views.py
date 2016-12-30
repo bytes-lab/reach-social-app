@@ -551,7 +551,7 @@ def add_new_comment(request):
                     for item in text.split(' '):
                         if item and item[0] == '@':
                             username = item[1:].lower()
-                            user = User.objects.first(username__iexact=username)
+                            user = User.objects.filter(username__iexact=username).first()
                             if not user:
                                 continue
                             UserFeed.objects.create(user=user,
