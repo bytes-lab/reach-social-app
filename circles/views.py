@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.core.files.base import ContentFile
 from django.db.models import Q
+from django.contrib.auth.models import User
 
 from users.models import UserFeed, UserNotification, UserReport
 from circles.models import Circle, UserCircle, Topic, Group, TopicComment, Notification
@@ -1379,7 +1380,7 @@ Send reply to the topic in circle.
                     circle = get_object_or_404(Circle, pk=topic.circle_id)
                     # serializer = CircleSerializer(circle)
                     serializer = FullCircleSerializer(circle)
-                    
+                    text = request.data.get('text')
                     notification = Notification.objects.create(user=topic.author,
                                                                circle=topic.circle,
                                                                otheruser_id=token.user_id,
@@ -1394,6 +1395,20 @@ Send reply to the topic in circle.
                                                 action="TopicComment",
                                                 topic_comment=topic_comment)
                         message = "{} comment your topic".format(token.user.username)
+
+                        # check @ for users                    
+                        for item in text.split(' '):
+                            if item and item[0] == '@':
+                                username = item[1:].lower()
+                                user = User.objects.filter(username__iexact=username).first()
+                                if not user:
+                                    continue
+                                UserFeed.objects.create(user=user,
+                                                        action_user=token.user,
+                                                        topic_comment=comment,
+                                                        action="TopicCommentComment")
+                                message = "{} commented on your comment".format(token.user.username)
+
                     else:
                         message = "Anonymous comment your topic"
                     if topic.author != token.user:
