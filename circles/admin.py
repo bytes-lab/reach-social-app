@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from circles.models import Circle, UserCircle, Topic, Group, TopicComment
+from circles.models import Circle, UserCircle, Topic, Group, TopicComment, Notification
 
 admin.site.register(Circle)
 admin.site.register(UserCircle)
