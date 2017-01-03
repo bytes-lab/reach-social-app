@@ -1510,7 +1510,7 @@ Rate comment method.
     {
         "token": "9bb7176dcdd06d196ef38c17600840d13943b9df",
         "comment_id": 1,
-        "statement": true
+        "statement": true  // for upvote and false for downvote
     }
 
     Success json:
@@ -1646,6 +1646,18 @@ Rate comment method.
                     comment = Comment.objects.get(pk=request.data["comment_id"])
                     post = Post.objects.get(pk=comment.post_id)
                     serializer = PostSerializer(post, context={'user_id': token.user_id})
+
+                    action = "UpVote" if request.data["statement"] else "DownVote"
+                    UserFeed.objects.create(user=comment.author,
+                                            action_user=token.user,
+                                            post_comment=comment,
+                                            action=action)
+
+                    UserFeed.objects.create(user=comment.post.author,
+                                            action_user=token.user,
+                                            post_comment=comment,
+                                            action=action)
+
                     if CommentLike.objects.filter(user=token.user_id, comment=comment).exists():
                         like = CommentLike.objects.get(user=token.user_id, comment=comment)
                         if like.statement == request.data["statement"]:

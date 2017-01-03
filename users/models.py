@@ -122,6 +122,8 @@ class UserFeed(models.Model):
         ('PostCommentComment', 'PostCommentComment'),
         ('TopicComment', 'TopicComment'),
         ('TopicCommentComment', 'TopicCommentComment'),
+        ('UpVote', 'UpVote'),
+        ('DownVote', 'DownVote'),
         ('Request', 'Request'),
     )
     user = models.ForeignKey(User, related_name="feed_user")
