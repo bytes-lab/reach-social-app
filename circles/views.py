@@ -1590,7 +1590,7 @@ Get all available circles.
 
     Example json:
     {
-	"token_id": "",
+        "token_id": "",
         "user_id": 37
     }
 
@@ -1598,8 +1598,8 @@ Get all available circles.
     if request.method == "POST":
         if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
             if Token.objects.filter(key=request.data["token"]).exists():
-		notification=Notification.objects.filter(user=request.data["user_id"])
-		serializer=NotificationSerializer(notification, many=True)
+                notification=Notification.objects.filter(user=request.data["user_id"])
+                serializer=NotificationSerializer(notification, many=True)
                 return Response({"success": 48,
                                  "notifications": serializer.data})
             else:
