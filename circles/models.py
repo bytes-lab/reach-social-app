@@ -62,6 +62,7 @@ class Notification(models.Model):
 
     def __unicode__(self):
         return r'%s create %s on %s' % (self.user.username,
+                                        self.circle.name,
                                         self.date)
 
 
