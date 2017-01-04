@@ -3,6 +3,7 @@ from rest_framework import serializers
 from circles.models import Circle, UserCircle, Topic, Group, TopicComment, Notification
 from users.models import UserReport
 from users.serializers import UserSerializer
+from django.contrib.auth.models import User
 
 
 class TopicCommentSerializer(serializers.ModelSerializer):
@@ -85,13 +86,18 @@ class CircleSerializer(serializers.ModelSerializer):
 class FullCircleSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
     members_count = serializers.SerializerMethodField("count_members")
+    members = serializers.SerializerMethodField("members")
     join = serializers.SerializerMethodField("check_join")
     group = GroupSerializer(read_only=True)
     topics = serializers.SerializerMethodField("get_circle_topics")
 
+    def members(self, obj):
+        user_ids = [item.user_id for item in UserCircle.objects.filter(circle=obj)]
+        users = User.objects.filter(id__in=user_ids)
+        return UserSerializer(users, many=True).data
+
     def count_members(self, obj):
-        count = UserCircle.objects.filter(circle=obj).count()
-        return count
+        return UserCircle.objects.filter(circle=obj).count()
 
     def get_circle_topics(self, obj):
         user_id = self.context.get("user_id")
@@ -100,13 +106,10 @@ class FullCircleSerializer(serializers.ModelSerializer):
         return TopicSerializer(topics, many=True).data
 
     def check_join(self, obj):
-        check = False
         user_id = self.context.get("user_id")
-        if UserCircle.objects.filter(circle=obj, user_id=user_id).exists():
-            check = True
-        return check
+        return UserCircle.objects.filter(circle=obj, user_id=user_id).exists()
 
     class Meta:
         model = Circle
         fields = ("id", "name", "owner", "description", "permission", "image", "group", "members_count", "join",
-                  "topics")
+                  "topics", "members")
