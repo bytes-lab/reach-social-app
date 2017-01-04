@@ -445,7 +445,7 @@ Get all available created circles.
                 start_offset = request.data["offset"]
                 end_offset = start_offset + PAGE_OFFSET
                 circles = Circle.objects.filter(owner_id=token.user_id)[start_offset:end_offset]
-                serializer = CircleSerializer(circles, context={'user_id': token.user_id}, many=True)
+                serializer = FullCircleSerializer(circles, context={'user_id': token.user_id}, many=True)
                 return Response({"success": 49,
                                  "circles": serializer.data,
                                  "offset": end_offset})
@@ -529,7 +529,7 @@ def get_joined_circles(request):
         else: # 'new'
             circles = reversed(circles.filter(pk__gt=circle_id).order_by("date")[:PAGE_OFFSET])
         
-        serializer = CircleSerializer(circles, context={'user_id': token.user_id}, many=True)
+        serializer = FullCircleSerializer(circles, context={'user_id': token.user_id}, many=True)
         return Response({"success": 50,
                          "circles": serializer.data})
     else:
