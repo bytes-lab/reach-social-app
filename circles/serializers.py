@@ -86,12 +86,12 @@ class CircleSerializer(serializers.ModelSerializer):
 class FullCircleSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
     members_count = serializers.SerializerMethodField("count_members")
-    members = serializers.SerializerMethodField("members")
+    members = serializers.SerializerMethodField("members_list")
     join = serializers.SerializerMethodField("check_join")
     group = GroupSerializer(read_only=True)
     topics = serializers.SerializerMethodField("get_circle_topics")
 
-    def members(self, obj):
+    def members_list(self, obj):
         user_ids = [item.user_id for item in UserCircle.objects.filter(circle=obj)]
         users = User.objects.filter(id__in=user_ids)
         return UserSerializer(users, many=True).data
