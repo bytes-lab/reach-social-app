@@ -1650,19 +1650,15 @@ def get_user_feed(request):
     if Token.objects.filter(key=token).exists():
         token = get_object_or_404(Token, key=token)
 
-        if notification_id == -1:
-            feed = UserFeed.objects.filter(user=token.user) \
+        if type_ == 'old':
+            feed = UserFeed.objects.filter(user=token.user, pk__lt=notification_id, read=True) \
                                    .exclude(action_user=token.user) \
-                                   .order_by("-date")[:FEED_PAGE_OFFSET]
-        elif type_ == 'old':
-            feed = UserFeed.objects.filter(user=token.user, pk__lt=notification_id) \
-                                   .exclude(action_user=token.user) \
-                                   .order_by("-date")[:FEED_PAGE_OFFSET]
+                                   .order_by("-date")
         else: # 'new'
-            feed = UserFeed.objects.filter(user=token.user, pk__gt=notification_id) \
+            feed = UserFeed.objects.filter(user=token.user, read=False) \
                                    .exclude(action_user=token.user) \
-                                   .order_by("date")[:FEED_PAGE_OFFSET]
-            feed = reversed(feed)
+                                   .order_by("-date")
+            # feed = reversed(feed)
 
         serializer = UserFeedSerializer(feed, many=True)
         return Response({"success": 76,
@@ -2178,6 +2174,10 @@ def read_user_feed(request):
     """
 Read all user feed
 
+    {
+        "notification_id": 12
+    }
+
     Example json:
     {
         "token": "9bb7176dcdd06d196ef38c17600840d13943b9df"
@@ -2197,13 +2197,11 @@ Read all user feed
     """
     if request.method == "POST":
         if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
+            notification_id = request.data.get('notification_id')
             if Token.objects.filter(key=request.data["token"]).exists():
                 token = get_object_or_404(Token, key=request.data["token"])
-                feed = UserFeed.objects.filter(user=token.user,
-                                               read=False)
-                for single_feed in feed:
-                    single_feed.read = True
-                    single_feed.save()
+                UserFeed.objects.filter(user=token.user, pk__lt=notification_id, read=False) \
+                                .update(read=True)
                 return Response({"success": 89})
             else:
                 return Response({"error": 17})
