@@ -2200,7 +2200,7 @@ Read all user feed
             notification_id = request.data.get('notification_id')
             if Token.objects.filter(key=request.data["token"]).exists():
                 token = get_object_or_404(Token, key=request.data["token"])
-                UserFeed.objects.filter(user=token.user, pk__lt=notification_id, read=False) \
+                UserFeed.objects.filter(user=token.user, pk__lte=notification_id, read=False) \
                                 .update(read=True)
                 return Response({"success": 89})
             else:
