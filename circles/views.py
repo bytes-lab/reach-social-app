@@ -871,12 +871,11 @@ def join_circle(request):
                         UserCircle.objects.filter(circle=circle, user_id=token.user_id).delete()
                     else:
                         UserCircle.objects.create(circle=circle, user_id=token.user_id)
-                        notification = Notification.objects.create(user=circle.owner,
-                                                                   circle=circle,
-                                                                   otheruser_id=token.user_id,
-                                                                   detail="Join your Group",
-                                                                   notitype=2)
-                        notification.save()
+                        Notification.objects.create(user=circle.owner,
+                                                    circle=circle,
+                                                    otheruser_id=token.user_id,
+                                                    detail="Join your Group",
+                                                    notitype=2)
                     # serializer = CircleSerializer(circle, context={'user_id': token.user_id})
                     serializer = FullCircleSerializer(circle, context={'user_id': token.user_id})
                     
@@ -1056,13 +1055,12 @@ Create new topic in circle.
                                              circle=circle,
                                              text=request.data["text"],
                                              permission=request.data["permission"])
-                        notification = Notification.objects.create(user=circle.owner, 
-                                                                   circle=circle,
-                                                                   otheruser_id=token.user_id,
-                                                                   detail=request.data["text"],
-                                                                   notitype=1,
-                                                                   topic=topic)
-                        notification.save()	
+                        Notification.objects.create(user=circle.owner, 
+                                                    circle=circle,
+                                                    otheruser_id=token.user_id,
+                                                    detail=request.data["text"],
+                                                    notitype=1,
+                                                    topic=topic)
                         serializer = CircleSerializer(circle, context={'user_id': token.user_id})
                         return Response({"success": 55,
                                          "circle": serializer.data})

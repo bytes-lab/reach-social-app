@@ -61,9 +61,20 @@ class Notification(models.Model):
     topic = models.ForeignKey(Topic, related_name="notification_topics", null=True, blank=True)
 
     def __unicode__(self):
-        return r'%s create %s on %s' % (self.user.username,
-                                        self.circle.name,
-                                        self.date)
+        if self.notitype == 0:
+            return '{} replied to a topic ({}) in {}\'s circle ({}) on {}' \
+                .format(self.otheruser.username, 
+                        self.topic.text, self.user.username, 
+                        self.circle.name, self.date)
+        elif self.notitype == 1:
+            return '{} created a topic ({}) in {}\'s circle ({}) on {}' \
+                .format(self.otheruser.username, 
+                        self.topic.text, self.user.username, 
+                        self.circle.name, self.date)
+        elif self.notitype == 2:
+            return '{} joined {}\'s circle ({}) on {}' \
+                .format(self.otheruser.username, self.user.username, 
+                        self.circle.name, self.date)
 
 
 class TopicComment(models.Model):
