@@ -1651,7 +1651,12 @@ def get_user_feed(request):
         token = get_object_or_404(Token, key=token)
 
         if type_ == 'old':
-            feed = UserFeed.objects.filter(user=token.user, pk__lt=notification_id, read=True) \
+            if notification_id == -1:
+                feed = UserFeed.objects.filter(user=token.user, read=True) \
+                                   .exclude(action_user=token.user) \
+                                   .order_by("-date")
+            else:
+                feed = UserFeed.objects.filter(user=token.user, pk__lt=notification_id, read=True) \
                                    .exclude(action_user=token.user) \
                                    .order_by("-date")
         else: # 'new'

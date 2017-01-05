@@ -1601,7 +1601,12 @@ def group_notification(request):
     if Token.objects.filter(key=token).exists():
         token = get_object_or_404(Token, key=token)
         if type_ == 'old':
-            notification = Notification.objects.filter(user=token.user, pk__lt=notification_id, read=True) \
+            if notification_id == -1:
+                notification = Notification.objects.filter(user=token.user, read=True) \
+                                       .exclude(otheruser=token.user) \
+                                       .order_by("-date")
+            else:
+                notification = Notification.objects.filter(user=token.user, pk__lt=notification_id, read=True) \
                                        .exclude(otheruser=token.user) \
                                        .order_by("-date")
         else: # 'new'
