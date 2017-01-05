@@ -2238,7 +2238,9 @@ Count unread user feed
             if Token.objects.filter(key=request.data["token"]).exists():
                 token = get_object_or_404(Token, key=request.data["token"])
                 unread_count = UserFeed.objects.filter(user=token.user,
-                                                       read=False).count()
+                                                       read=False) \
+                                               .exclude(action_user=token.user) \
+                                               .count()
                 return Response({"success": 90,
                                  "unread_count": unread_count})
             else:

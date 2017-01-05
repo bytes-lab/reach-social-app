@@ -136,7 +136,7 @@ EMAIL_USE_TLS = True
 
 # APNS cerf
 APNS_CERF_PATH = BASE_DIR+'/iphone_ck_prod.pem'
-APNS_CERF_SANDBOX_MODE = False
+APNS_CERF_SANDBOX_MODE = True
 
 # Lazy load
 PAGE_OFFSET = 10
