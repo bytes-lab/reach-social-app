@@ -1602,11 +1602,11 @@ def group_notification(request):
         token = get_object_or_404(Token, key=token)
         if type_ == 'old':
             notification = Notification.objects.filter(user=token.user, pk__lt=notification_id, read=True) \
-                                       .exclude(action_user=token.user) \
+                                       .exclude(otheruser=token.user) \
                                        .order_by("-date")
         else: # 'new'
             notification = Notification.objects.filter(user=token.user, read=False) \
-                                   .exclude(action_user=token.user) \
+                                   .exclude(otheruser=token.user) \
                                    .order_by("-date")
 
         serializer = NotificationSerializer(notification, many=True)
