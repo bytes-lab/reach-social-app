@@ -2020,18 +2020,21 @@ Connect facebook account to user
         if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
             if Token.objects.filter(key=request.data["token"]).exists():
                 token = get_object_or_404(Token, key=request.data["token"])
-                graph = facebook.GraphAPI(access_token=request.data["access_token"], timeout=60)
-                facebook_user = graph.get_object("me", fields='id, name, email, first_name, last_name, '
-                                                              'picture.type(large), bio, birthday, gender, '
-                                                              'hometown, about')
-                user_profile = get_object_or_404(UserProfile, user=token.user)
-                user_profile.is_facebook = True
-                user_profile.facebook_url = "https://www.facebook.com/app_scoped_user_id/{}".format(facebook_user["id"])
-                user_profile.save()
-                user = get_object_or_404(User, pk=token.user_id)
-                serializer = UserSerializer(user)
-                return Response({"success": 83,
-                                 "user": serializer.data})
+                try:
+                    graph = facebook.GraphAPI(access_token=request.data["access_token"], timeout=60)
+                    facebook_user = graph.get_object("me", fields='id, name, email, first_name, last_name, '
+                                                                  'picture.type(large), bio, birthday, gender, '
+                                                                  'hometown, about')
+                    user_profile = get_object_or_404(UserProfile, user=token.user)
+                    user_profile.is_facebook = True
+                    user_profile.facebook_url = "https://www.facebook.com/app_scoped_user_id/{}".format(facebook_user["id"])
+                    user_profile.save()
+                    user = get_object_or_404(User, pk=token.user_id)
+                    serializer = UserSerializer(user)
+                    return Response({"success": 83,
+                                     "user": serializer.data})
+                except Exception, e:
+                    return Response({"error": "Something is wrong"})
             else:
                 return Response({"error": 17})
 
