@@ -2023,7 +2023,7 @@ Connect facebook account to user
                 try:
                     graph = facebook.GraphAPI(access_token=request.data["access_token"], timeout=60)
                     facebook_user = graph.get_object("me", fields='id, name, email, first_name, last_name, '
-                                                                  'picture.type(large), bio, birthday, gender, '
+                                                                  'picture.type(large), birthday, gender, '
                                                                   'hometown, about')
                     user_profile = get_object_or_404(UserProfile, user=token.user)
                     user_profile.is_facebook = True
