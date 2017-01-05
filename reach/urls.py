@@ -5,7 +5,8 @@ from django.contrib import admin
 
 from circles.views import create_new_circle, circle_search, get_created_circles, get_joined_circles, get_circle, \
     join_circle, create_new_topic, get_topic, get_groups, send_reply, \
-    get_created_circles_search, get_joined_circles_search, group_notification
+    get_created_circles_search, get_joined_circles_search, group_notification, \
+    unread_group_notifications, read_group_notification
 from dashboard.views import sign_in, broadcast_notification, logout_user, broadcast_email
 from locate.views import create_group
 from posts.views import add_new_post, add_new_comment, get_user_posts, send_like, remove_like, rate_comment, \
@@ -98,6 +99,8 @@ urlpatterns = [
     url(r'^api/v1/circle/get-circle/$', get_circle),
     url(r'^api/v1/circle/join-circle/$', join_circle),
     url(r'^api/v1/circle/get-circle-notification/$', group_notification),
+    url(r'^api/v1/circle/get-unread-notifications/$', unread_group_notifications),
+    url(r'^api/v1/circle/read-notifications/$', read_group_notification),
     
     url(r'^api/v1/circle/search/$', circle_search),
     # topics

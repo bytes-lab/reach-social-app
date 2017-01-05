@@ -1584,21 +1584,58 @@ Get all available joined circles.
 @api_view(["POST"])
 def group_notification(request):
     """
-Get all available circles.
+    Get read/unread circle notifications.
 
-    Example json:
-    {
-        "token_id": "",
-        "user_id": 37
-    }
+        Example json:
+        {
+            "token": "",
+            "notification_id": 37,
+            "type": "new" or "old"
+        }
 
     """
-    if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                notification=Notification.objects.filter(user=request.data["user_id"])
-                serializer=NotificationSerializer(notification, many=True)
-                return Response({"success": 48,
-                                 "notifications": serializer.data})
-            else:
-                return Response({"error": 17})
+    token = request.data.get('token')
+    notification_id = request.data.get('notification_id')
+    type_ = request.data.get('type')
+
+    if Token.objects.filter(key=token).exists():
+        token = get_object_or_404(Token, key=token)
+        if type_ == 'old':
+            notification = Notification.objects.filter(user=token.user, pk__lt=notification_id, read=True) \
+                                       .exclude(action_user=token.user) \
+                                       .order_by("-date")
+        else: # 'new'
+            notification = Notification.objects.filter(user=token.user, read=False) \
+                                   .exclude(action_user=token.user) \
+                                   .order_by("-date")
+
+        serializer = NotificationSerializer(notification, many=True)
+        return Response({"success": 48,
+                         "notifications": serializer.data})
+    else:
+        return Response({"error": 17})
+
+
+@api_view(["POST"])
+def read_group_notification(request):
+    token = request.data.get('token')
+    notification_id = request.data.get('notification_id')
+    if Token.objects.filter(key=token).exists():
+        token = get_object_or_404(Token, key=token)
+        Notification.objects.filter(user=token.user, pk__lte=notification_id, read=False) \
+                        .update(read=True)
+        return Response({"success": 89})
+    else:
+        return Response({"error": 17})
+
+
+@api_view(["POST"])
+def unread_group_notifications(request):
+    if Token.objects.filter(key=request.data["token"]).exists():
+        token = get_object_or_404(Token, key=request.data["token"])
+        unread_count = Notification.objects.filter(user=token.user,
+                                                   read=False).count()
+        return Response({"success": 90,
+                         "unread_count": unread_count})
+    else:
+        return Response({"error": 17})

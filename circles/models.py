@@ -59,7 +59,8 @@ class Notification(models.Model):
     notitype = models.IntegerField(default=0)
     date = models.DateTimeField(auto_now_add=True)
     topic = models.ForeignKey(Topic, related_name="notification_topics", null=True, blank=True)
-
+    read = models.BooleanField(default=False)
+    
     def __unicode__(self):
         if self.notitype == 0:
             return '{} replied to a topic ({}) in {}\'s circle ({}) on {}' \
