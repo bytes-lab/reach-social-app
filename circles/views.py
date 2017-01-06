@@ -1398,13 +1398,14 @@ Send reply to the topic in circle.
     if Token.objects.filter(key=token).exists():
         if Topic.objects.filter(pk=request.data["topic_id"]).exists():
             token = get_object_or_404(Token, key=request.data["token"])
+            circle = get_object_or_404(Circle, pk=topic.circle_id)
+            
             if UserCircle.objects.filter(circle=circle, user_id=token.user_id).exists():
                 topic = get_object_or_404(Topic, pk=request.data["topic_id"])
                 topic_comment = TopicComment.objects.create(topic=topic,
                                                             author_id=token.user_id,
                                                             text=request.data["text"],
                                                             permission=request.data["permission"])
-                circle = get_object_or_404(Circle, pk=topic.circle_id)
                 serializer = FullCircleSerializer(circle)
                 text = request.data.get('text')
 
