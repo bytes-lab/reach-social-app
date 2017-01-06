@@ -546,36 +546,32 @@ def add_new_comment(request):
                                             post_comment=comment,
                                             action="PostComment")
                     message = "{} commented on your post".format(token.user.username)
-
-                    # check @ for users                    
-                    for item in text.split(' '):
-                        if item and item[0] == '@':
-                            username = item[1:].lower()
-                            user = User.objects.filter(username__iexact=username).first()
-                            if not user:
-                                continue
-                            UserFeed.objects.create(user=user,
-                                                    action_user=token.user,
-                                                    post_comment=comment,
-                                                    action="PostCommentComment")
-                            message = "{} commented on your comment".format(token.user.username)
-
                 else:
                     message = "Anonymous commented on your post"
+
+                custom = {
+                    "post_id": post.id
+                }
+
                 if post.author != token.user:
-                    custom = {
-                        "post_id": post.id
-                    }
-                    apns = APNs(use_sandbox=APNS_CERF_SANDBOX_MODE, cert_file=APNS_CERF_PATH)
-                    payload = Payload(alert=message, sound="default", category="TEST", badge=1,
-                                      custom=custom)
-                    user_notifications = UserNotification.objects.filter(user=post.author)
-                    for user_notification in user_notifications:
-                        try:
-                            apns.gateway_server.send_notification(user_notification.device_token,
-                                                                  payload)
-                        except:
-                            pass
+                    user_notification = UserNotification.objects.get(user=post.author)
+                    send_notification(custom, message, user_notification)
+
+                # check @ for users                    
+                for item in text.split(' '):
+                    if item and item[0] == '@':
+                        username = item[1:].lower()
+                        user = User.objects.filter(username__iexact=username).first()
+                        if not user or user == token.user:
+                            continue
+                        UserFeed.objects.create(user=user,
+                                                action_user=token.user,
+                                                post_comment=comment,
+                                                action="PostCommentComment")
+                        message = "{} commented on your comment".format(token.user.username)
+                        user_notification = UserNotification.objects.get(user=user)
+                        send_notification(custom, message, user_notification)
+
                 return Response({"success": 26,
                                  "post": serializer.data})
             else:
@@ -1653,10 +1649,21 @@ Rate comment method.
                                             post_comment=comment,
                                             action=action)
 
+                    custom = {
+                        "comment_id": comment.id
+                    }
+                    message = "{} {}d your comment".format(token.user.username, action.lower())
+                    user_notification = UserNotification.objects.get(user=comment.author)
+                    send_notification(custom, message, user_notification)
+
                     UserFeed.objects.create(user=comment.post.author,
                                             action_user=token.user,
                                             post_comment=comment,
                                             action=action)
+
+                    message = "{} {}d in your post".format(token.user.username, action.lower())
+                    user_notification = UserNotification.objects.get(user=comment.post.author)
+                    send_notification(custom, message, user_notification)
 
                     if CommentLike.objects.filter(user=token.user_id, comment=comment).exists():
                         like = CommentLike.objects.get(user=token.user_id, comment=comment)
