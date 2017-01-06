@@ -875,7 +875,6 @@ def join_circle(request):
                                                     otheruser_id=token.user_id,
                                                     detail="Join your Group",
                                                     notitype=2)
-
                         custom = {
                             "circle_id": circle.id
                         }
@@ -1399,70 +1398,80 @@ Send reply to the topic in circle.
     if Token.objects.filter(key=token).exists():
         if Topic.objects.filter(pk=request.data["topic_id"]).exists():
             token = get_object_or_404(Token, key=request.data["token"])
-            topic = get_object_or_404(Topic, pk=request.data["topic_id"])
-            topic_comment = TopicComment.objects.create(topic=topic,
-                                                        author_id=token.user_id,
-                                                        text=request.data["text"],
-                                                        permission=request.data["permission"])
-            circle = get_object_or_404(Circle, pk=topic.circle_id)
-            serializer = FullCircleSerializer(circle)
-            text = request.data.get('text')
+            if UserCircle.objects.filter(circle=circle, user_id=token.user_id).exists():
+                topic = get_object_or_404(Topic, pk=request.data["topic_id"])
+                topic_comment = TopicComment.objects.create(topic=topic,
+                                                            author_id=token.user_id,
+                                                            text=request.data["text"],
+                                                            permission=request.data["permission"])
+                circle = get_object_or_404(Circle, pk=topic.circle_id)
+                serializer = FullCircleSerializer(circle)
+                text = request.data.get('text')
 
-            Notification.objects.create(user=circle.owner,
-                                        circle=topic.circle,
-                                        otheruser_id=token.user_id,
-                                        notitype=0,
-                                        topic=topic,
-                                        detail=request.data["text"])
+                Notification.objects.create(user=circle.owner,
+                                            circle=topic.circle,
+                                            otheruser_id=token.user_id,
+                                            notitype=0,
+                                            topic=topic,
+                                            detail=request.data["text"])
 
-            Notification.objects.create(user=topic.author,
-                                        circle=topic.circle,
-                                        otheruser_id=token.user_id,
-                                        notitype=0,
-                                        topic=topic,
-                                        detail=request.data["text"])
-					       
-            # if request.data["permission"]:
-                # UserFeed.objects.create(user=topic.author,
-                #                         action_user=token.user,
-                #                         action="TopicComment",
-                #                         topic_comment=topic_comment)
-            custom = {
-                "circle_id": circle.id
-            }
+                custom = {
+                    "circle_id": circle.id
+                }
 
-            message = "{} comment your topic".format(token.user.username)
+                message = "{} commented in your circle".format(token.user.username)
 
-            if topic.author != token.user:
-                user_notification = UserNotification.objects.get(user=topic.author)
-                send_notification(custom, message, user_notification)
+                if circle.owner != token.user:
+                    user_notification = UserNotification.objects.get(user=circle.owner)
+                    send_notification(custom, message, user_notification)
 
-            # check @ for users                    
-            for item in text.split(' '):
-                if item and item[0] == '@':
-                    username = item[1:].lower()
-                    user = User.objects.filter(username__iexact=username).first()
-                    if not user:
-                        continue
-                    Notification.objects.create(user=user,
-                                                circle=topic.circle,
-                                                otheruser_id=token.user_id,
-                                                notitype=0,
-                                                topic=topic,
-                                                detail=request.data["text"])
-
-                    # UserFeed.objects.create(user=user,
+                Notification.objects.create(user=topic.author,
+                                            circle=topic.circle,
+                                            otheruser_id=token.user_id,
+                                            notitype=0,
+                                            topic=topic,
+                                            detail=request.data["text"])
+                               
+                # if request.data["permission"]:
+                    # UserFeed.objects.create(user=topic.author,
                     #                         action_user=token.user,
-                    #                         topic_comment=comment,
-                    #                         action="TopicCommentComment")
-                    message = "{} commented on your comment".format(token.user.username)
+                    #                         action="TopicComment",
+                    #                         topic_comment=topic_comment)
 
-                    if user != token.user:
-                        user_notification = UserNotification.objects.get(user=user)
-                        send_notification(custom, message, user_notification)
+                message = "{} comment your topic".format(token.user.username)
 
-            return Response({"success": 58,
-                             "circle": serializer.data})
+                if topic.author != token.user:
+                    user_notification = UserNotification.objects.get(user=topic.author)
+                    send_notification(custom, message, user_notification)
+
+                # check @ for users                    
+                for item in text.split(' '):
+                    if item and item[0] == '@':
+                        username = item[1:].lower()
+                        user = User.objects.filter(username__iexact=username).first()
+                        if not user:
+                            continue
+                        Notification.objects.create(user=user,
+                                                    circle=topic.circle,
+                                                    otheruser_id=token.user_id,
+                                                    notitype=0,
+                                                    topic=topic,
+                                                    detail=request.data["text"])
+
+                        # UserFeed.objects.create(user=user,
+                        #                         action_user=token.user,
+                        #                         topic_comment=comment,
+                        #                         action="TopicCommentComment")
+                        message = "{} commented on your comment".format(token.user.username)
+
+                        if user != token.user:
+                            user_notification = UserNotification.objects.get(user=user)
+                            send_notification(custom, message, user_notification)
+
+                return Response({"success": 58,
+                                 "circle": serializer.data})
+            else:
+                return Response({"error": 53})
         else:
             return Response({"error": 57})
     else:
