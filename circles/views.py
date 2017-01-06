@@ -1061,6 +1061,16 @@ Create new topic in circle.
                                                     detail=request.data["text"],
                                                     notitype=1,
                                                     topic=topic)
+
+                        # send notifications to topic owners in the circle
+                        for user in [item.author for item in Topic.objects.filter(circle=circle)]:
+                            Notification.objects.create(user=user, 
+                                                        circle=circle,
+                                                        otheruser_id=token.user_id,
+                                                        detail=request.data["text"],
+                                                        notitype=1,
+                                                        topic=topic)
+
                         serializer = FullCircleSerializer(circle, context={'user_id': token.user_id})
                         return Response({"success": 55,
                                          "circle": serializer.data})
