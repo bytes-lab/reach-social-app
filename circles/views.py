@@ -1401,7 +1401,7 @@ Send reply to the topic in circle.
             topic = get_object_or_404(Topic, pk=request.data["topic_id"])
             circle = get_object_or_404(Circle, pk=topic.circle_id)
             
-            if UserCircle.objects.filter(circle=circle, user_id=token.user_id).exists():
+            if UserCircle.objects.filter(circle=circle, user_id=token.user_id).exists() or token.user == circle.owner:
                 topic_comment = TopicComment.objects.create(topic=topic,
                                                             author_id=token.user_id,
                                                             text=request.data["text"],
