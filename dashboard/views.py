@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from users.models import UserNotification
 from reach.settings import APNS_CERF_PATH, APNS_CERF_SANDBOX_MODE, BASE_DIR
 from apns import APNs, Payload
-
+from utils import send_notification
 
 def sign_in(request):
     return HttpResponseRedirect('/admin/')
@@ -41,16 +41,8 @@ def broadcast_notification(request):
             "message": request.POST["text"]
         }
 
-        apns = APNs(use_sandbox=APNS_CERF_SANDBOX_MODE, cert_file=APNS_CERF_PATH)
-        payload = Payload(alert=message, sound="default", 
-            category="TEST", badge=1, custom=custom)
-
         for nf in UserNotification.objects.filter(user_id__in=user_ids):
-            try:
-                device_token = nf.device_token.replace('-', '')
-                apns.gateway_server.send_notification(device_token, payload)
-            except:
-                print device_token, '######'
+            send_notification(custom, message, nf)
 
     return render(request, 'send_push.html')
 

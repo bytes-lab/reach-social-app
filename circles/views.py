@@ -13,9 +13,8 @@ from rest_framework.authtoken.models import Token
 
 from base64 import b64decode
 
-from reach.settings import APNS_CERF_PATH, APNS_CERF_SANDBOX_MODE, PAGE_OFFSET
-
-from apns import APNs, Payload
+from reach.settings import PAGE_OFFSET
+from utils import send_notification
 
 
 @api_view(["POST"])
@@ -876,6 +875,14 @@ def join_circle(request):
                                                     otheruser_id=token.user_id,
                                                     detail="Join your Group",
                                                     notitype=2)
+
+                        custom = {
+                            "circle_id": circle.id
+                        }
+                        message = "{} joined into your circle".format(token.user.username)
+                        user_notification = UserNotification.objects.get(user=circle.owner)
+                        send_notification(custom, message, user_notification)
+
                     # serializer = CircleSerializer(circle, context={'user_id': token.user_id})
                     serializer = FullCircleSerializer(circle, context={'user_id': token.user_id})
                     
@@ -1062,6 +1069,13 @@ Create new topic in circle.
                                                     notitype=1,
                                                     topic=topic)
 
+                        custom = {
+                            "circle_id": circle.id
+                        }
+                        message = "{} created a new topic in your circle".format(token.user.username)
+                        user_notification = UserNotification.objects.get(user=circle.owner)
+                        send_notification(custom, message, user_notification)
+
                         # send notifications to topic owners in the circle
                         for user in [item.author for item in Topic.objects.filter(circle=circle)]:
                             Notification.objects.create(user=user, 
@@ -1070,6 +1084,10 @@ Create new topic in circle.
                                                         detail=request.data["text"],
                                                         notitype=1,
                                                         topic=topic)
+
+                            message = "{} created a new topic in your circle".format(user.username)
+                            user_notification = UserNotification.objects.get(user=user)
+                            send_notification(custom, message, user_notification)
 
                         serializer = FullCircleSerializer(circle, context={'user_id': token.user_id})
                         return Response({"success": 55,
@@ -1375,68 +1393,70 @@ Send reply to the topic in circle.
         "error": <status_code>
     }
     """
-    if request.method == "POST":
-        if "token" in request.data and request.data["token"] != "" and request.data["token"] is not None:
-            if Token.objects.filter(key=request.data["token"]).exists():
-                if Topic.objects.filter(pk=request.data["topic_id"]).exists():
-                    token = get_object_or_404(Token, key=request.data["token"])
-                    topic = get_object_or_404(Topic, pk=request.data["topic_id"])
-                    topic_comment = TopicComment.objects.create(topic=topic,
-                                                                author_id=token.user_id,
-                                                                text=request.data["text"],
-                                                                permission=request.data["permission"])
-                    circle = get_object_or_404(Circle, pk=topic.circle_id)
-                    # serializer = CircleSerializer(circle)
-                    serializer = FullCircleSerializer(circle)
-                    text = request.data.get('text')
-                    notification = Notification.objects.create(user=topic.author,
-                                                               circle=topic.circle,
-                                                               otheruser_id=token.user_id,
-                                                               notitype=0,
-                                                               topic=topic,
-                                                               detail=request.data["text"])
-                    notification.save()
-							       
-                    if request.data["permission"]:
-                        UserFeed.objects.create(user=topic.author,
-                                                action_user=token.user,
-                                                action="TopicComment",
-                                                topic_comment=topic_comment)
-                        message = "{} comment your topic".format(token.user.username)
+    token = request.data.get('token')
+    if Token.objects.filter(key=token).exists():
+        if Topic.objects.filter(pk=request.data["topic_id"]).exists():
+            token = get_object_or_404(Token, key=request.data["token"])
+            topic = get_object_or_404(Topic, pk=request.data["topic_id"])
+            topic_comment = TopicComment.objects.create(topic=topic,
+                                                        author_id=token.user_id,
+                                                        text=request.data["text"],
+                                                        permission=request.data["permission"])
+            circle = get_object_or_404(Circle, pk=topic.circle_id)
+            serializer = FullCircleSerializer(circle)
+            text = request.data.get('text')
+            Notification.objects.create(user=topic.author,
+                                        circle=topic.circle,
+                                        otheruser_id=token.user_id,
+                                        notitype=0,
+                                        topic=topic,
+                                        detail=request.data["text"])
+					       
+            # if request.data["permission"]:
+                # UserFeed.objects.create(user=topic.author,
+                #                         action_user=token.user,
+                #                         action="TopicComment",
+                #                         topic_comment=topic_comment)
+            custom = {
+                "circle_id": circle.id
+            }
 
-                        # check @ for users                    
-                        for item in text.split(' '):
-                            if item and item[0] == '@':
-                                username = item[1:].lower()
-                                user = User.objects.filter(username__iexact=username).first()
-                                if not user:
-                                    continue
-                                UserFeed.objects.create(user=user,
-                                                        action_user=token.user,
-                                                        topic_comment=comment,
-                                                        action="TopicCommentComment")
-                                message = "{} commented on your comment".format(token.user.username)
+            message = "{} comment your topic".format(token.user.username)
 
-                    else:
-                        message = "Anonymous comment your topic"
-                    if topic.author != token.user:
-                        custom = {
-                            "circle_id": circle.id
-                        }
-                        apns = APNs(use_sandbox=APNS_CERF_SANDBOX_MODE, cert_file=APNS_CERF_PATH)
-                        payload = Payload(alert=message, sound="default", category="TEST", badge=1, custom=custom)
-                        user_notifications = UserNotification.objects.filter(user=topic.author)
-                        for user_notification in user_notifications:
-                            try:
-                                apns.gateway_server.send_notification(user_notification.device_token, payload)
-                            except:
-                                pass
-                    return Response({"success": 58,
-                                     "circle": serializer.data})
-                else:
-                    return Response({"error": 57})
-            else:
-                return Response({"error": 17})
+            if topic.author != token.user:
+                user_notification = UserNotification.objects.get(user=topic.author)
+                send_notification(custom, message, user_notification)
+
+            # check @ for users                    
+            for item in text.split(' '):
+                if item and item[0] == '@':
+                    username = item[1:].lower()
+                    user = User.objects.filter(username__iexact=username).first()
+                    if not user:
+                        continue
+                    Notification.objects.create(user=user,
+                                                circle=topic.circle,
+                                                otheruser_id=token.user_id,
+                                                notitype=0,
+                                                topic=topic,
+                                                detail=request.data["text"])
+
+                    # UserFeed.objects.create(user=user,
+                    #                         action_user=token.user,
+                    #                         topic_comment=comment,
+                    #                         action="TopicCommentComment")
+                    message = "{} commented on your comment".format(token.user.username)
+
+                    if user != token.user:
+                        user_notification = UserNotification.objects.get(user=user)
+                        send_notification(custom, message, user_notification)
+
+            return Response({"success": 58,
+                             "circle": serializer.data})
+        else:
+            return Response({"error": 57})
+    else:
+        return Response({"error": 17})
 
 
 @api_view(["POST"])
