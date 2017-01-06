@@ -1061,7 +1061,7 @@ Create new topic in circle.
                                                     detail=request.data["text"],
                                                     notitype=1,
                                                     topic=topic)
-                        serializer = CircleSerializer(circle, context={'user_id': token.user_id})
+                        serializer = FullCircleSerializer(circle, context={'user_id': token.user_id})
                         return Response({"success": 55,
                                          "circle": serializer.data})
                     else:
