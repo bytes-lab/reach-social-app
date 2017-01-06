@@ -17,6 +17,7 @@ import math
 from apns import APNs, Payload
 
 from reach.settings import APNS_CERF_PATH, APNS_CERF_SANDBOX_MODE, PAGE_OFFSET
+from utils import send_notification
 
 
 @api_view(["POST"])
@@ -1087,18 +1088,14 @@ Send like to posts.
                                                 like=like,
                                                 action="Like")
                         if post.author != token.user:
-                            message = "{} like your post".format(token.user.username)
+                            message = "{} likes your post".format(token.user.username)
                             custom = {
                                 "post_id": post.id
                             }
-                            apns = APNs(use_sandbox=APNS_CERF_SANDBOX_MODE, cert_file=APNS_CERF_PATH)
-                            payload = Payload(alert=message, sound="default", category="TEST", badge=1, custom=custom)
-                            user_notifications = UserNotification.objects.filter(user=post.author)
-                            for user_notification in user_notifications:
-                                try:
-                                    apns.gateway_server.send_notification(user_notification.device_token, payload)
-                                except:
-                                    pass
+
+                            user_notification = UserNotification.objects.get(user=post.author)
+                            send_notification(custom, message, user_notification)
+
                         return Response({"success": 30,
                                          "post": serializer.data})
                 else:
