@@ -1062,6 +1062,7 @@ Create new topic in circle.
                                              circle=circle,
                                              text=request.data["text"],
                                              permission=request.data["permission"])
+
                         Notification.objects.create(user=circle.owner, 
                                                     circle=circle,
                                                     otheruser_id=token.user_id,
@@ -1077,17 +1078,18 @@ Create new topic in circle.
                         send_notification(custom, message, user_notification)
 
                         # send notifications to topic owners in the circle
-                        for user in [item.author for item in Topic.objects.filter(circle=circle)]:
-                            Notification.objects.create(user=user, 
-                                                        circle=circle,
-                                                        otheruser_id=token.user_id,
-                                                        detail=request.data["text"],
-                                                        notitype=1,
-                                                        topic=topic)
+                        for user in [item.user for item in UserCircle.objects.filter(circle=circle)]:
+                            if user != token.user:
+                                Notification.objects.create(user=user, 
+                                                            circle=circle,
+                                                            otheruser_id=token.user_id,
+                                                            detail=request.data["text"],
+                                                            notitype=1,
+                                                            topic=topic)
 
-                            message = "{} created a new topic in your circle".format(user.username)
-                            user_notification = UserNotification.objects.get(user=user)
-                            send_notification(custom, message, user_notification)
+                                message = "{} created a new topic in your circle".format(user.username)
+                                user_notification = UserNotification.objects.get(user=user)
+                                send_notification(custom, message, user_notification)
 
                         serializer = FullCircleSerializer(circle, context={'user_id': token.user_id})
                         return Response({"success": 55,
@@ -1405,6 +1407,14 @@ Send reply to the topic in circle.
             circle = get_object_or_404(Circle, pk=topic.circle_id)
             serializer = FullCircleSerializer(circle)
             text = request.data.get('text')
+
+            Notification.objects.create(user=circle.owner,
+                                        circle=topic.circle,
+                                        otheruser_id=token.user_id,
+                                        notitype=0,
+                                        topic=topic,
+                                        detail=request.data["text"])
+
             Notification.objects.create(user=topic.author,
                                         circle=topic.circle,
                                         otheruser_id=token.user_id,
