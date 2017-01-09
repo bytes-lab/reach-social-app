@@ -1086,7 +1086,7 @@ Create new topic in circle.
                                                             notitype=1,
                                                             topic=topic)
 
-                                message = "{} created a new topic in your circle".format(user.username)
+                                message = "{} left a status in your group".format(token.user.username)
                                 user_notification = UserNotification.objects.get(user=user)
                                 send_notification(custom, message, user_notification)
 
