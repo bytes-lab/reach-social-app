@@ -1651,18 +1651,23 @@ def get_user_feed(request):
         token = get_object_or_404(Token, key=token)
 
         if type_ == 'old':
-            if notification_id == -1:
-                feed = UserFeed.objects.filter(user=token.user, read=True) \
-                                   .exclude(action_user=token.user) \
-                                   .order_by("-date")[:10]
-            else:
-                feed = UserFeed.objects.filter(user=token.user, pk__lt=notification_id, read=True) \
-                                   .exclude(action_user=token.user) \
-                                   .order_by("-date")
+            feed = UserFeed.objects.filter(user=token.user, pk__lt=notification_id, read=True) \
+                               .exclude(action_user=token.user) \
+                               .order_by("-date")[:PAGE_OFFSET]
         else: # 'new'
-            feed = UserFeed.objects.filter(user=token.user, read=False) \
+            if notification_id == -1:
+                feed = UserFeed.objects.filter(user=token.user, read=False) \
                                    .exclude(action_user=token.user) \
                                    .order_by("-date")
+                if not feed:
+                    feed = UserFeed.objects.filter(user=token.user) \
+                                       .exclude(action_user=token.user) \
+                                       .order_by("-date")[:FEED_PAGE_OFFSET]
+
+            else:
+                feed = UserFeed.objects.filter(user=token.user, pk__gt=notification_id, read=False) \
+                                       .exclude(action_user=token.user) \
+                                       .order_by("-date")
             # feed = reversed(feed)
 
         serializer = UserFeedSerializer(feed, many=True)
