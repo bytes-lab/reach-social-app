@@ -546,12 +546,13 @@ def add_new_comment(request):
                                             action_user=token.user,
                                             post_comment=comment,
                                             action="PostComment")
-                    message = "{} commented on your post".format(token.user.username)
+                    message = "{} commented: {}".format(token.user.username, comment.text)
                 else:
                     message = "Anonymous commented on your post"
 
                 custom = {
-                    "post_id": post.id
+                    "post_id": post.id,
+                    "avatar":  UserProfile.objects.get(user=token.user).avatar.url
                 }
 
                 if post.author != token.user:
@@ -569,7 +570,7 @@ def add_new_comment(request):
                                                 action_user=token.user,
                                                 post_comment=comment,
                                                 action="PostCommentComment")
-                        message = "{} commented on your comment".format(token.user.username)
+                        message = "{} commented: {}".format(token.user.username, comment.text)
                         user_notification = UserNotification.objects.get(user=user)
                         send_notification(custom, message, user_notification)
 
@@ -1090,7 +1091,8 @@ Send like to posts.
                         if post.author != token.user:
                             message = "{} likes your post".format(token.user.username)
                             custom = {
-                                "post_id": post.id
+                                "post_id": post.id,
+                                "avatar":  UserProfile.objects.get(user=token.user).avatar.url
                             }
 
                             user_notification = UserNotification.objects.get(user=post.author)
@@ -1647,9 +1649,10 @@ Rate comment method.
                                             action=action)
 
                     custom = {
-                        "comment_id": comment.id
+                        "post_id": post.id,
+                        "avatar":  UserProfile.objects.get(user=token.user).avatar.url
                     }
-                    message = "{} {}d your comment".format(token.user.username, action.lower())
+                    message = "{} {}d: {}".format(token.user.username, action.lower(), comment.text)
                     user_notification = UserNotification.objects.get(user=comment.author)
                     send_notification(custom, message, user_notification)
 

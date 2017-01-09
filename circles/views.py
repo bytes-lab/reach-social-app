@@ -3,7 +3,7 @@ from django.core.files.base import ContentFile
 from django.db.models import Q
 from django.contrib.auth.models import User
 
-from users.models import UserNotification, UserReport
+from users.models import UserNotification, UserReport, UserProfile
 from circles.models import Circle, UserCircle, Topic, Group, TopicComment, Notification
 from circles.serializers import CircleSerializer, TopicSerializer, GroupSerializer, FullCircleSerializer, NotificationSerializer
 
@@ -876,9 +876,10 @@ def join_circle(request):
                                                     detail="Join your Group",
                                                     notitype=2)
                         custom = {
-                            "circle_id": circle.id
+                            "circle_id": circle.id,
+                            "avatar":  UserProfile.objects.get(user=token.user).avatar.url
                         }
-                        message = "{} joined into your circle".format(token.user.username)
+                        message = "{} joined your group".format(token.user.username)
                         user_notification = UserNotification.objects.get(user=circle.owner)
                         send_notification(custom, message, user_notification)
 
@@ -1070,9 +1071,10 @@ Create new topic in circle.
                                                     topic=topic)
 
                         custom = {
-                            "circle_id": circle.id
+                            "circle_id": circle.id,
+                            "avatar":  UserProfile.objects.get(user=token.user).avatar.url
                         }
-                        message = "{} left a status in your group".format(token.user.username)
+                        message = "{} left a status: {}".format(token.user.username, topic.text)
                         user_notification = UserNotification.objects.get(user=circle.owner)
                         send_notification(custom, message, user_notification)
 
@@ -1417,10 +1419,11 @@ Send reply to the topic in circle.
                                             detail=request.data["text"])
 
                 custom = {
-                    "circle_id": circle.id
+                    "circle_id": circle.id,
+                    "avatar":  UserProfile.objects.get(user=token.user).avatar.url
                 }
 
-                message = "{} commented in your circle".format(token.user.username)
+                message = "{} commented: {}".format(token.user.username, topic.text)
 
                 if circle.owner != token.user:
                     user_notification = UserNotification.objects.get(user=circle.owner)
