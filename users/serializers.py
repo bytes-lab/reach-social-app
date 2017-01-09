@@ -130,7 +130,7 @@ class UserFeedSerializer(serializers.ModelSerializer):
     action_user = UserSerializer(read_only=True)
     object = serializers.SerializerMethodField('_get_feed_object')
     date = serializers.SerializerMethodField("_get_format_date")
-    comment_comment = serializers.SerializerMethodField("get_comment_comment")
+    comment_comment = serializers.SerializerMethodField()
 
     def get_comment_comment(self, obj):
         if obj.action != "PostCommentComment":
