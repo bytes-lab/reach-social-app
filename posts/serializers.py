@@ -101,5 +101,5 @@ class PostSerializer_feed(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = (
-        "id", "author", "text", "date", "permission", "image", "video", "post_hashtags", "post_comments", "like_count",
+        "id", "author", "text", "date", "permission", "image", "video", "post_hashtags", "like_count",
         "comment_count", "is_like")
