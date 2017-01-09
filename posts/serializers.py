@@ -70,3 +70,36 @@ class PostSerializer(serializers.ModelSerializer):
         fields = (
         "id", "author", "text", "date", "permission", "image", "video", "post_hashtags", "post_comments", "like_count",
         "comment_count", "is_like")
+
+
+class PostSerializer_feed(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+    post_hashtags = PostHashtagSerializer(many=True, read_only=True)
+    comment_count = serializers.SerializerMethodField("get_post_comments")
+    like_count = serializers.SerializerMethodField("get_post_likes")
+    is_like = serializers.SerializerMethodField("check_user_like")
+    date = serializers.SerializerMethodField("get_format_date")
+        
+    def get_format_date(self, obj):
+        return obj.date.strftime("%H:%M:%S %Y:%m:%d")
+
+    def check_user_like(self, obj):
+        check = False
+        user_id = self.context.get("user_id")
+        if Like.objects.filter(post=obj, user=user_id).exists():
+            check = True
+        return check
+
+    def get_post_comments(self, obj):
+        count = Comment.objects.filter(post=obj).count()
+        return count
+
+    def get_post_likes(self, obj):
+        # count = Like.objects.filter(post=obj).count()
+        return obj.count_likes
+
+    class Meta:
+        model = Post
+        fields = (
+        "id", "author", "text", "date", "permission", "image", "video", "post_hashtags", "post_comments", "like_count",
+        "comment_count", "is_like")

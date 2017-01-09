@@ -120,8 +120,6 @@ class UserFeed(models.Model):
         ('Feedback', 'Feedback'),
         ('PostComment', 'PostComment'),
         ('PostCommentComment', 'PostCommentComment'),
-        ('TopicComment', 'TopicComment'),
-        ('TopicCommentComment', 'TopicCommentComment'),
         ('UpVote', 'UpVote'),
         ('DownVote', 'DownVote'),
         ('Request', 'Request'),

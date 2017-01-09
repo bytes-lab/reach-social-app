@@ -3,7 +3,7 @@ from django.core.files.base import ContentFile
 from django.db.models import Q
 from django.contrib.auth.models import User
 
-from users.models import UserFeed, UserNotification, UserReport
+from users.models import UserNotification, UserReport
 from circles.models import Circle, UserCircle, Topic, Group, TopicComment, Notification
 from circles.serializers import CircleSerializer, TopicSerializer, GroupSerializer, FullCircleSerializer, NotificationSerializer
 
@@ -1432,12 +1432,6 @@ Send reply to the topic in circle.
                                             notitype=0,
                                             topic=topic,
                                             detail=request.data["text"])
-                               
-                # if request.data["permission"]:
-                    # UserFeed.objects.create(user=topic.author,
-                    #                         action_user=token.user,
-                    #                         action="TopicComment",
-                    #                         topic_comment=topic_comment)
 
                 message = "{} comment your topic".format(token.user.username)
 
@@ -1459,10 +1453,6 @@ Send reply to the topic in circle.
                                                     topic=topic,
                                                     detail=request.data["text"])
 
-                        # UserFeed.objects.create(user=user,
-                        #                         action_user=token.user,
-                        #                         topic_comment=comment,
-                        #                         action="TopicCommentComment")
                         message = "{} commented on your comment".format(token.user.username)
 
                         if user != token.user:

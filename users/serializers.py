@@ -130,17 +130,22 @@ class UserFeedSerializer(serializers.ModelSerializer):
     action_user = UserSerializer(read_only=True)
     object = serializers.SerializerMethodField('_get_feed_object')
     date = serializers.SerializerMethodField("_get_format_date")
+    comment_comment = serializers.SerializerMethodField("get_comment_comment")
+
+
+    def get_comment_comment(self. obj):
+        if obj.action != "PostCommentComment":
+            return ""
+        return obj.post_comment.text
 
     def _get_feed_object(self, obj):
-        from posts.serializers import PostSerializer
+        from posts.serializers import PostSerializer_feed
         from circles.serializers import TopicSerializer
 
         if obj.like and obj.action == "Like":
-            return PostSerializer(obj.like.post).data
+            return PostSerializer_feed(obj.like.post).data
         elif obj.post_comment and obj.action in ["PostComment", "PostCommentComment", "UpVote", "DownVote"]:
-            return PostSerializer(obj.post_comment.post).data
-        elif obj.topic_comment and obj.action in ["TopicComment", "TopicCommentComment"]:
-            return TopicSerializer(obj.topic_comment.topic).data
+            return PostSerializer_feed(obj.post_comment.post).data
         elif obj.user_rate and obj.action == "Feedback":
             return UserRateSerializer(obj.user_rate).data
         elif obj.user_request and obj.action == "Request":
