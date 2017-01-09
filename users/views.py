@@ -1654,7 +1654,7 @@ def get_user_feed(request):
             if notification_id == -1:
                 feed = UserFeed.objects.filter(user=token.user, read=True) \
                                    .exclude(action_user=token.user) \
-                                   .order_by("-date")
+                                   .order_by("-date")[:10]
             else:
                 feed = UserFeed.objects.filter(user=token.user, pk__lt=notification_id, read=True) \
                                    .exclude(action_user=token.user) \
