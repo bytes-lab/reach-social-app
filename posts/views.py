@@ -541,14 +541,11 @@ def add_new_comment(request):
                                                  text=text,
                                                  permission=permission)
                 serializer = PostSerializer(post, context={'user_id': token.user_id})
-                if permission:
-                    UserFeed.objects.create(user=post.author,
-                                            action_user=token.user,
-                                            post_comment=comment,
-                                            action="PostComment")
-                    message = "{} commented: {}".format(token.user.username, comment.text)
-                else:
-                    message = "Anonymous commented on your post"
+                UserFeed.objects.create(user=post.author,
+                                        action_user=token.user,
+                                        post_comment=comment,
+                                        action="PostComment")
+                message = "{} commented: {}".format(token.user.username, comment.text)
 
                 custom = {
                     "post_id": post.id,
