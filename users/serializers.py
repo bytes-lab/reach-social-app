@@ -132,7 +132,6 @@ class UserFeedSerializer(serializers.ModelSerializer):
     date = serializers.SerializerMethodField("_get_format_date")
     comment_comment = serializers.SerializerMethodField("get_comment_comment")
 
-
     def get_comment_comment(self, obj):
         if obj.action != "PostCommentComment":
             return ""
@@ -158,4 +157,4 @@ class UserFeedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserFeed
-        fields = ("id", "action_user", "action", "object", "date")
+        fields = ("id", "action_user", "action", "object", "date", "comment_comment")
