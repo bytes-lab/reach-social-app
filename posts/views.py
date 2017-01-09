@@ -1661,7 +1661,7 @@ Rate comment method.
                                             post_comment=comment,
                                             action=action)
 
-                    message = "{} {}d in your post".format(token.user.username, action.lower())
+                    message = "{} {}d: {}".format(token.user.username, action.lower(), comment.text)
                     user_notification = UserNotification.objects.get(user=comment.post.author)
                     send_notification(custom, message, user_notification)
 
