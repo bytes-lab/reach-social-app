@@ -157,4 +157,4 @@ class UserFeedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserFeed
-        fields = ("id", "action_user", "action", "object", "date", "comment_comment")
+        fields = ("id", "action_user", "action", "object", "date", "comment_comment", "read")
