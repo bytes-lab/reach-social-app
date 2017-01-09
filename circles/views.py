@@ -1072,7 +1072,7 @@ Create new topic in circle.
                         custom = {
                             "circle_id": circle.id
                         }
-                        message = "{} created a new topic in your circle".format(token.user.username)
+                        message = "{} left a status in your group".format(token.user.username)
                         user_notification = UserNotification.objects.get(user=circle.owner)
                         send_notification(custom, message, user_notification)
 
@@ -1641,18 +1641,23 @@ def group_notification(request):
     if Token.objects.filter(key=token).exists():
         token = get_object_or_404(Token, key=token)
         if type_ == 'old':
-            if notification_id == -1:
-                notification = Notification.objects.filter(user=token.user, read=True) \
-                                       .exclude(otheruser=token.user) \
-                                       .order_by("-date")
-            else:
-                notification = Notification.objects.filter(user=token.user, pk__lt=notification_id, read=True) \
-                                       .exclude(otheruser=token.user) \
-                                       .order_by("-date")
-        else: # 'new'
-            notification = Notification.objects.filter(user=token.user, read=False) \
+            notification = Notification.objects.filter(user=token.user, pk__lt=notification_id, read=True) \
                                    .exclude(otheruser=token.user) \
-                                   .order_by("-date")
+                                   .order_by("-date")[:PAGE_OFFSET]
+        else: # 'new'
+            if notification_id == -1:
+                notification = Notification.objects.filter(user=token.user, read=False) \
+                                       .exclude(otheruser=token.user) \
+                                       .order_by("-date")
+                if not notification:
+                    notification = Notification.objects.filter(user=token.user, read=True) \
+                                           .exclude(otheruser=token.user) \
+                                           .order_by("-date")[:PAGE_OFFSET]
+
+            else:
+                notification = Notification.objects.filter(user=token.user, pk__gt=notification_id, read=False) \
+                                       .exclude(otheruser=token.user) \
+                                       .order_by("-date")
 
         serializer = NotificationSerializer(notification, many=True)
         return Response({"success": 48,
