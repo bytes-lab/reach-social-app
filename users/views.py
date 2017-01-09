@@ -1653,7 +1653,7 @@ def get_user_feed(request):
         if type_ == 'old':
             feed = UserFeed.objects.filter(user=token.user, pk__lt=notification_id, read=True) \
                                .exclude(action_user=token.user) \
-                               .order_by("-date")[:PAGE_OFFSET]
+                               .order_by("-date")[:FEED_PAGE_OFFSET]
         else: # 'new'
             if notification_id == -1:
                 feed = UserFeed.objects.filter(user=token.user, read=False) \
