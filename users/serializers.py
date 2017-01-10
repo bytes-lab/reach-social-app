@@ -133,9 +133,9 @@ class UserFeedSerializer(serializers.ModelSerializer):
     comment_comment = serializers.SerializerMethodField()
 
     def get_comment_comment(self, obj):
-        if obj.action != "PostCommentComment":
-            return ""
-        return obj.post_comment.text
+        if obj.action in ["PostCommentComment", "PostComment"]:
+            return obj.post_comment.text
+        return ""
 
     def _get_feed_object(self, obj):
         from posts.serializers import PostSerializer_feed
