@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
