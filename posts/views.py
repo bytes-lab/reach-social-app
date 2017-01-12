@@ -1649,7 +1649,7 @@ Rate comment method.
                         "post_id": post.id,
                         "avatar":  UserProfile.objects.get(user=token.user).avatar.url
                     }
-                    message = "{} {}d: {}".format(token.user.username, action.lower(), comment.text.encode('ascii', 'ignore').decode('ascii'))
+                    message = "{} {}d: {}".format(token.user.username, action.lower(), comment.text.decode('ascii', 'ignore'))
                     user_notification = UserNotification.objects.get(user=comment.author)
                     send_notification(custom, message, user_notification)
 
