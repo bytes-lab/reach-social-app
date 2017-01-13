@@ -1667,7 +1667,7 @@ Rate comment method.
                                             action=action)
 
                     try:
-                        msg = comment.text.decode('ascii', 'ignore')
+                        msg = filter(lambda x: x in printable, comment.text)
                     except Exception, e:
                         msg = ''
 
