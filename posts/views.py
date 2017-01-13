@@ -1,3 +1,5 @@
+import string
+
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
@@ -1650,7 +1652,9 @@ Rate comment method.
                         "avatar":  UserProfile.objects.get(user=token.user).avatar.url
                     }
                     # try:
-                    msg = (comment.text[:50]).encode('utf-8').strip()
+                    printable = set(string.printable)
+                    msg = filter(lambda x: x in printable, comment.text)
+                    # msg = comment.text.decode('ascii', 'ignore')
                     # except Exception, e:
                     #     msg = ''
                     message = "{} {}d: {}".format(token.user.username, action.lower(), msg)
