@@ -1650,7 +1650,7 @@ Rate comment method.
                         "avatar":  UserProfile.objects.get(user=token.user).avatar.url
                     }
                     try:
-                        msg = comment.text.decode('ascii', 'ignore')
+                        msg = comment.text.encode('utf-8').strip()
                     except Exception, e:
                         msg = ''
                     message = "{} {}d: {}".format(token.user.username, action.lower(), msg)
