@@ -1649,10 +1649,10 @@ Rate comment method.
                         "post_id": post.id,
                         "avatar":  UserProfile.objects.get(user=token.user).avatar.url
                     }
-                    try:
-                        msg = comment.text.encode('utf-8').strip()
-                    except Exception, e:
-                        msg = ''
+                    # try:
+                    msg = (comment.text[:50]).encode('utf-8').strip()
+                    # except Exception, e:
+                    #     msg = ''
                     message = "{} {}d: {}".format(token.user.username, action.lower(), msg)
                     user_notification = UserNotification.objects.get(user=comment.author)
                     send_notification(custom, message, user_notification)
