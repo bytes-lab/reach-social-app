@@ -1505,7 +1505,7 @@ Please send only one parameter:
                 if 'post_id' in request.data:
                     if Post.objects.filter(pk=request.data["post_id"]).exists():
                         post = get_object_or_404(Post, pk=request.data["post_id"])
-                        content = 'New report email from {}(id: {}) about POST: "{}" ' \
+                        content_ = 'New report from {}(id: {}) about POST: "{}" ' \
                                   '(post-id: {}). Post author {}(id: {})'.format(token.user.email,
                                                                                  token.user.id,
                                                                                  (post.text[:50]).encode('utf-8').strip(),
@@ -1517,7 +1517,7 @@ Please send only one parameter:
                 elif 'comment_id' in request.data:
                     if Comment.objects.filter(pk=request.data["comment_id"]).exists():
                         comment = get_object_or_404(Comment, pk=request.data["comment_id"])
-                        content = 'New report email from {}(id: {}) about COMMENT: "{}" ' \
+                        content_ = 'New report from {}(id: {}) about COMMENT: "{}" ' \
                                   '(comment-id: {}). Comment author {}(id: {})'.format(token.user.email,
                                                                                        token.user.id,
                                                                                        (post.text[:50]).encode('utf-8').strip(),
@@ -1529,7 +1529,7 @@ Please send only one parameter:
                 elif 'circle_id' in request.data:
                     if Circle.objects.filter(pk=request.data["circle_id"]).exists():
                         circle = get_object_or_404(Circle, pk=request.data["circle_id"])
-                        content = 'New report email from {}(id: {}) about CIRCLE: "{}" ' \
+                        content_ = 'New report from {}(id: {}) about CIRCLE: "{}" ' \
                                   '(circle-id: {}). Circle creator {}(id: {})'.format(token.user.email,
                                                                                       token.user.id,
                                                                                       (post.text[:50]).encode('utf-8').strip(),
@@ -1538,8 +1538,32 @@ Please send only one parameter:
                                                                                       circle.owner.id)
                     else:
                         return Response({"error": 51})
-                subject = 'New report. Please check it.'
-                send_email(subject=subject, content=content)
+
+                # send report accepted email to user
+                from_email = Email("info@reachanonymous.com", "Reach Anonymous")
+                subject = "Report Accepted"
+                to_email = Email(token.user.email)
+                
+                path = BASE_DIR + '/static/email_templates/report_user.html'
+                temp = codecs.open(path, encoding='utf-8')
+                content = temp.read()
+                content = Content("text/html", content)
+                mail = Mail(from_email, subject, to_email, content)
+                response = sg.client.mail.send.post(request_body=mail.get())
+
+                # send contact accepted email to admin
+                
+                from_email = Email("info@reachanonymous.com", "Reach Anonymous")
+                subject = "New Report"
+                to_email = Email('michaelgarevalo@gmail.com')
+                
+                path = BASE_DIR + '/static/email_templates/report_admin.html'
+                temp = open(path, 'r')
+                content = temp.read().replace('[CONTENT]', content_)
+                content = Content("text/html", content)
+                mail = Mail(from_email, subject, to_email, content)
+                response = sg.client.mail.send.post(request_body=mail.get())
+
                 return Response({"success": 73})
 
             else:
