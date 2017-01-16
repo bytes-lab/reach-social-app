@@ -1436,7 +1436,7 @@ Send reply to the topic in circle.
                                             topic=topic,
                                             detail=request.data["text"])
 
-                message = "{} comment your topic".format(token.user.username)
+                message = "{} commented on your post".format(token.user.username)
 
                 if topic.author != token.user:
                     user_notification = UserNotification.objects.get(user=topic.author)
