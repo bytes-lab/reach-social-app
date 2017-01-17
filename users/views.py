@@ -60,7 +60,8 @@ def registration(request):
             "email":"antonboksha@gmail.com",
             "password":"qwerty",
             "device_token": "devicetokengoeshere",
-            "device_unique_id": "devicegoeshere"
+            "device_unique_id": "devicegoeshere",
+            "qbchat_id": 32423
         }
 
         Code statuses can be found here: /api/v1/docs/status-code/
@@ -101,6 +102,7 @@ def registration(request):
     """
     # username validation
     username = request.data.get('username')
+    qbchat_id = request.data.get('qbchat_id')
 
     if not username:
         return
@@ -174,9 +176,11 @@ def registration(request):
     # create a token and userprofile
     token = Token.objects.create(user=user)
     up = UserProfile.objects.create(user=user, device_unique_id=device_unique_id,
-        full_name="{} {}".format(first_name, last_name), birthday=birthday, rate=-1)
+        full_name="{} {}".format(first_name, last_name), birthday=birthday, 
+        rate=-1, qbchat_id=qbchat_id)
     # create a user notification
     device_token = request.data.get("device_token")
+    
     if UserNotification.objects.filter(device_token=device_token).exists():
         UserNotification.objects.filter(device_token=device_token).delete()
         UserNotification.objects.create(user_id=token.user_id,
