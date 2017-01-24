@@ -547,7 +547,10 @@ def add_new_comment(request):
                                         action_user=token.user,
                                         post_comment=comment,
                                         action="PostComment")
-                message = "{} commented: {}".format(token.user.username, comment.text.encode('utf-8'))
+
+                printable = set(string.printable)
+                msg = filter(lambda x: x in printable, comment.text)                
+                message = "{} commented: {}".format(token.user.username, msg)
 
                 custom = {
                     "post_id": post.id,
@@ -569,7 +572,8 @@ def add_new_comment(request):
                                                 action_user=token.user,
                                                 post_comment=comment,
                                                 action="PostCommentComment")
-                        message = "{} commented: {}".format(token.user.username, comment.text.encode('utf-8'))
+                        msg = filter(lambda x: x in printable, comment.text)                
+                        message = "{} commented: {}".format(token.user.username, msg)
                         user_notification = UserNotification.objects.get(user=user)
                         send_notification(custom, message, user_notification)
 
