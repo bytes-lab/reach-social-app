@@ -1646,10 +1646,6 @@ Rate comment method.
                     serializer = PostSerializer(post, context={'user_id': token.user_id})
 
                     action = "UpVote" if request.data["statement"] else "DownVote"
-                    UserFeed.objects.create(user=comment.author,
-                                            action_user=token.user,
-                                            post_comment=comment,
-                                            action=action)
 
                     custom = {
                         "post_id": post.id,
