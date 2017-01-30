@@ -48,7 +48,7 @@ class UserNotification(models.Model):
     device_token = models.TextField()
 
     def __unicode__(self):
-        return self.device_token
+        return "{} - {}".format(self.user.username, self.device_token)
 
 
 class ChatContacts(models.Model):
