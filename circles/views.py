@@ -207,7 +207,7 @@ Create a new circle.
                                             image_data = b64decode(request.data["image"])
                                             circle.image = ContentFile(image_data, "circle.png")
                                             circle.save()
-                                        # UserCircle.objects.create(circle=circle, user_id=token.user_id)
+                                        UserCircle.objects.create(circle=circle, user_id=token.user_id)
                                         serializer = CircleSerializer(circle, context={'user_id': token.user_id})
                                         return Response({"success": 47,
                                                          "circle": serializer.data})
