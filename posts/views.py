@@ -1647,6 +1647,10 @@ Rate comment method.
 
                     action = "UpVote" if request.data["statement"] else "DownVote"
 
+                    UserFeed.objects.create(user=comment.author,
+                                            action_user=token.user,
+                                            post_comment=comment,
+                                            action=action)
                     custom = {
                         "post_id": post.id,
                         "avatar":  UserProfile.objects.get(user=token.user).avatar.url
