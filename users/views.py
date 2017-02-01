@@ -153,7 +153,7 @@ def registration(request):
         birthday = request.data.get('birthday')
         birthday = datetime.datetime.strptime(birthday, '%Y-%m-%d')
     except Exception, e:
-        return Response({"error": 'Birthday should be in YYYY-MM-DD format.'})
+        return Response({"error": 7}) # 'Birthday should be in YYYY-MM-DD format.'
 
     # create a user
     user = User.objects.create(username=username, email=email, 
