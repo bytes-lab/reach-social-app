@@ -30,8 +30,8 @@ class CustomUserAdmin(UserAdmin):
     def location(self, obj):
         if obj.is_staff:
             return ''
-        return "({}, {}, {})".format(obj.info.city_name, obj.info.state_name, 
-            obj.info.country_name)
+        return "({}, {}, {})".format(obj.info.city_name.encode('utf-8'), obj.info.state_name.encode('utf-8'), 
+            obj.info.country_name.encode('utf-8'))
 
     def export_users(self, request, queryset):
         result_csv_fields = [
