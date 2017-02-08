@@ -1060,13 +1060,13 @@ Create new topic in circle.
                     if UserCircle.objects.filter(circle=circle, user_id=token.user_id).exists():
                         topic = Topic.objects.create(author_id=token.user_id,
                                              circle=circle,
-                                             text=request.data["text"],
+                                             text=request.data["text"].encode('utf-8'),
                                              permission=request.data["permission"])
 
                         Notification.objects.create(user=circle.owner, 
                                                     circle=circle,
                                                     otheruser_id=token.user_id,
-                                                    detail=request.data["text"],
+                                                    detail=request.data["text"].encode('utf-8'),
                                                     notitype=1,
                                                     topic=topic)
 
@@ -1084,7 +1084,7 @@ Create new topic in circle.
                                 Notification.objects.create(user=user, 
                                                             circle=circle,
                                                             otheruser_id=token.user_id,
-                                                            detail=request.data["text"],
+                                                            detail=request.data["text"].encode('utf-8'),
                                                             notitype=1,
                                                             topic=topic)
 

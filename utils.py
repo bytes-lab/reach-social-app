@@ -6,6 +6,7 @@ from reach.settings import APNS_CERT_FILE, APNS_KEY_FILE
 from apns import APNs, Payload
 
 
+import string
 import uuid
 import os
 
@@ -37,6 +38,9 @@ def send_email(subject, content):
 
 
 def send_notification(custom, message, user_notification):
+    printable = set(string.printable)
+    message = filter(lambda x: x in printable, message)                
+
     apns = APNs(use_sandbox=APNS_CERF_SANDBOX_MODE, cert_file=APNS_CERF_PATH)
     # apns = APNs(use_sandbox=APNS_CERF_SANDBOX_MODE, cert_file=APNS_CERT_FILE, key_file=APNS_KEY_FILE)
     payload = Payload(alert=message, sound="default", category="TEST", badge=1, custom=custom)
