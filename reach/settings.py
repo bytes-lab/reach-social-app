@@ -127,10 +127,9 @@ STATICFILES_DIRS = (
 )
 
 # Email
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'Reachappreports@gmail.com'
-# EMAIL_HOST_USER = 'info@reach.com'
-EMAIL_HOST_PASSWORD = 'Reachapp123'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'Reachanonymous'
+EMAIL_HOST_PASSWORD = 'Secret123'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 

@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 
 from users.models import UserNotification
 from reach.settings import APNS_CERF_PATH, APNS_CERF_SANDBOX_MODE, BASE_DIR
@@ -56,7 +57,8 @@ def broadcast_email(request):
         content = request.POST["content"]
 
         for user in User.objects.filter(id__in=user_ids):
-            user.email_user(subject, content)
+            # user.email_user(subject, content)
+            send_mail(subject, content, 'Reachappreports@gmail.com', [user.email], fail_silently=False)
 
         return HttpResponseRedirect('/admin/auth/user')
     return render(request, 'broadcast_email.html')
