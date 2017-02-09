@@ -58,7 +58,7 @@ def broadcast_email(request):
 
         for user in User.objects.filter(id__in=user_ids):
             # user.email_user(subject, content)
-            send_mail(subject, content, 'Reachappreports@gmail.com', [user.email], fail_silently=False)
+            send_mail(subject, content, 'info@reachanonymous.com', [user.email], fail_silently=False)
 
         return HttpResponseRedirect('/admin/auth/user')
     return render(request, 'broadcast_email.html')
