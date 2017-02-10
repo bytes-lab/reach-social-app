@@ -357,8 +357,10 @@ def edit_post(request):
         token = get_object_or_404(Token, key=token)
         post = get_object_or_404(Post, id=post_id)
 
-        post.permission = request.data["permission"]
-        post.author_id = token.user_id
+        if post.author_id != token.user_id:
+            return Response({"error": 17})
+            
+        post.permission = request.data["permission"]        
         post.text = text
 
         if image:

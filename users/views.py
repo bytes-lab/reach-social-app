@@ -2499,7 +2499,7 @@ def get_user_by_name(request):
     if request.method == "POST":
         token = request.data.get('token')
         if Token.objects.filter(key=token).exists():
-            user = get_object_or_404(User, username=request.data["username"])
+            user = get_object_or_404(User, username__iexact=request.data["username"])
             serializer = UserSerializer(user)
             return Response({"success": 20, "user": serializer.data})
         return Response({"error": 17})
