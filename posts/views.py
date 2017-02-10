@@ -359,7 +359,7 @@ def edit_post(request):
 
         if post.author_id != token.user_id:
             return Response({"error": 17})
-            
+
         post.permission = request.data["permission"]        
         post.text = text
 
@@ -533,7 +533,7 @@ def add_new_comment(request):
     if Token.objects.filter(key=token).exists():
         if len(text) < 10:
             return Response({"error": 24})
-        if len(text) > 255:
+        if len(text) > 1000:
             return Response({"error": 25})
 
         if type(post_id) is int:
