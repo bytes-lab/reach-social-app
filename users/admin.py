@@ -63,7 +63,7 @@ class CustomUserAdmin(UserAdmin):
             user_['city'] = userprofile.city_name
             user_['state'] = userprofile.state_name
             user_['country'] = userprofile.country_name
-            user_['avatar'] = userprofile.avatar.url
+            user_['avatar'] = userprofile.avatar
             user_['facebook_url'] = userprofile.facebook_url
             user_['twitter_url'] = userprofile.twitter_url
             user_['instagram_url'] = userprofile.instagram_url
