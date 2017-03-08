@@ -49,3 +49,8 @@ def send_notification(custom, message, user_notification):
         apns.gateway_server.send_notification(user_notification.device_token, payload)
     except:
         pass
+
+
+def get_printable_str(message):
+    printable = set(string.printable)
+    return filter(lambda x: x in printable, message)                

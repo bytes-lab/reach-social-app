@@ -15,7 +15,7 @@ from base64 import b64decode
 
 from reach.settings import PAGE_OFFSET
 from utils import send_notification
-
+from utils import get_printable_str
 
 @api_view(["POST"])
 def create_new_circle(request):
@@ -1074,7 +1074,8 @@ Create new topic in circle.
                             "circle_id": circle.id,
                             "avatar":  UserProfile.objects.get(user=token.user).avatar.url
                         }
-                        message = "{} left a status: {}".format(token.user.username, topic.text)
+                        message = "{} left a status: {}".format(token.user.username, 
+                            get_printable_str(topic.text))
                         user_notification = UserNotification.objects.get(user=circle.owner)
                         send_notification(custom, message, user_notification)
 
@@ -1423,7 +1424,8 @@ Send reply to the topic in circle.
                     "avatar":  UserProfile.objects.get(user=token.user).avatar.url
                 }
 
-                message = "{} commented: {}".format(token.user.username, topic.text)
+                message = "{} commented: {}".format(token.user.username, 
+                    get_printable_str(topic.text))
 
                 if circle.owner != token.user:
                     user_notification = UserNotification.objects.get(user=circle.owner)
